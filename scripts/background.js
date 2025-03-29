@@ -1,30 +1,41 @@
 // once this extension is installed, perform this action
 chrome.runtime.onInstalled.addListener(() => {
-
-    //receiving a message
-    chrome.runtime.onMessage.addListener(
-        function(request, sender, sendResponse) {
-        console.log(sender.tab ?
-                    "from a content script:" + sender.tab.url :
-                    "from the extension");
-        if (request.greeting === "hello")
-            sendResponse({farewell: "goodbye"});
-        }
-    );
-
-    //create context menu
     chrome.contextMenus.create({
-        id: "wikipedia",
-        title: "Search for: \"%s\" on Wikipedia", 
+        id: "illume",
+        title: "Learn about \"%s\" with illume!", 
         contexts: ["selection"], 
     })
 });
 
-//listener for context menu
-chrome.contextMenus.onClicked.addListener(function(info, tab){
-    //the URL that will be added to based on the selection
-    baseURL = "http://en.wikipedia.org/wiki/";
-    var newURL = baseURL + info.selectionText;
-    //create the new URL in the user's browser
-    chrome.tabs.create({ url: newURL });
-})
+let contentPort = null;
+
+chrome.runtime.onConnect.addListener(function(port) {
+    if (port.name === "sendSiteText") {
+        contentPort = port;
+
+        port.onMessage.addListener(function(msg) {
+            if (msg.siteText) {
+                console.log("Found site text:");
+                console.log(msg.siteText);
+
+                chrome.storage.local.set({ siteText: msg.siteText }, function () {
+                    console.log("Site text saved to storage");
+                });
+            } else {
+                console.log("no siteText found");
+            }
+        });
+    }
+});
+
+
+chrome.contextMenus.onClicked.addListener(function(info, tab) {
+    if (contentPort) {
+        contentPort.postMessage({ flag: "irrelavent" });
+    } else {
+        console.warn("No connected content script to send message to.");
+    }
+
+    // optional: do something with info.selectionText
+});
+
