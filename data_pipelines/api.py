@@ -1,12 +1,12 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from llm_engineering.app.actions import start, runQuiz
-
+from llm_engineering.app.actions import PabloAI  #causing errors?
+#likely the poetry as he mentioned earlier, ask futurther
 
 app = Flask(__name__)
 CORS(app)
 
-# placeholder functions to abstract
+# MATT placeholder functions to abstract
 grab_init_summary = lambda x, y: [None,] 
 grab_init_questions = lambda x, y: [None,]
 grab_init_recursive_question = lambda : [None,]
@@ -25,7 +25,9 @@ def homepage():
 # request headers
 document_text, topic = "document_text", "topic"
 
-
+# when you make for multiple users fix this implementation for 
+# Pablo AI
+pablo_ai = PabloAI()
 
 
 @app.route('/initial_summary', methods=['POST'])
@@ -79,7 +81,7 @@ def start_quiz():
         return jsonify({"status": "FAILED, please attach correct parameters"}), 500
     
     # Call start function from llm_engineering
-    result = start(response["document_text"], response["topic"])
+    result = pablo_ai.start(response["document_text"], response["topic"])
     return jsonify(result), 200
 
 @app.route("/wrong_question", methods=['POST'])
@@ -91,7 +93,7 @@ def handle_wrong_question():
         return jsonify({"status": "FAILED, please attach correct parameters"}), 500
     
     # Call runQuiz with the wrong question data
-    result = runQuiz(response["document_text"], response["topic"])
+    result = pablo_ai.runQuiz(response["document_text"], response["topic"])
     return jsonify(result), 200
 
 @app.route("/recursive_question", methods=['GET'])

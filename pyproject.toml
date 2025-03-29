@@ -11,6 +11,8 @@ packages = [
 python = "^3.9"
 google-genai = "^0.1.0"
 python-dotenv = "^1.0.0"
+flask = "^3.0.0"
+flask-cors = "^4.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.0"
