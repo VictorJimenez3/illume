@@ -1,17 +1,1 @@
-["1. Euler's constant is represented by which Greek letter?", 
-" a) Alpha (\u03b1)", 
-" b) Beta (\u03b2)", 
-" c) Gamma (\u03b3)", 
-" d) Delta (\u03b4)", 
-"", 
-"2. Approximately, what is the numerical value of Euler's constant?", 
-" a) 3.14159", 
-" b) 2.71828", 
-" c) 0.57721", 
-" d) 1.61803", 
-"", 
-"3. True or False: It is known for certain whether Euler's constant is a rational or irrational number.", 
-"", 
-"4. Euler's constant is defined as the limiting difference between the harmonic series and the natural _____________.", 
-""
-]
+[["1. Which of the following best approximates the value of Euler's constant?", "a) 3.14159", "b) 2.71828", "c) 0.57721", "d) 1.61803"], ["2. Euler's constant is defined as the limiting difference between which two mathematical concepts?", "a) The Fibonacci sequence and the golden ratio", "b) The harmonic series and the natural logarithm", "c) The prime number theorem and the Riemann zeta function", "d) The binomial theorem and the exponential function"], ["3. True or False: It is definitively known whether Euler's constant is a rational or irrational number."], ["4. Euler's constant is often denoted by the lowercase Greek letter ______."]]
