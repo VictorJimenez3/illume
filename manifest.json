@@ -6,17 +6,17 @@
     "background": {
         "service_worker": "scripts/background.js"
     },
-    "permissions": 
-    ["storage", 
-    "activeTab",
-    "contextMenus"],
+    
+    "permissions": ["storage", "activeTab", "contextMenus"],
+    
     "action": {
-        "default_popup": "popup.html"
+        "default_popup": "templates/popup.html"
     }, 
+    
     "content_scripts": [
         {
             "matches": ["https://*.google.com/*"],
-            "js": ["content.js"]
+            "js": ["scripts/content.js"]
         }
     ]
 }
