@@ -9,11 +9,9 @@ def main():
     data = "Python is a high-level, interpreted programming language known for its simplicity and readability."
     
     # Run the initial learning session
-    results = pablo_ai.start(keyword, data)
-    
-    # Example of running a quiz with wrong questions
-    wrong_questions = "What is Python? A: A snake"
-    quiz_results = pablo_ai.runQuiz(keyword, data, wrong_questions)
+    results = pablo_ai.makeSummary(keyword, data)
+  
+    quiz_results = pablo_ai.makeQuestions(keyword, results["general_explanation"])
     
     return results, quiz_results
 
