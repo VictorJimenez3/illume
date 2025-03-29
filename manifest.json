@@ -3,24 +3,36 @@
     "description": "illume", 
     "version": "1.0",
     "manifest_version": 3, 
+    
     "background": {
         "service_worker": "scripts/background.js"
     },
-    "permissions": 
-    ["storage", 
-    "activeTab",
-    "sidePanel",
-    "contextMenus"],
+  
+    "permissions": ["storage", "activeTab", "contextMenus", "scripting", "sidePanel"],
+    
     "action": {
         "default_popup": "templates/popup.html"
     }, 
+    
     "side_panel": {
-    "default_path": "templates/sidepanel.html"
+        "default_path": "templates/sidepanel.html"
     },
+    
     "content_scripts": [
         {
-            "matches": ["https://*.google.com/*"],
-            "js": ["scripts/content.js"]
+            "matches": ["<all_urls>"],
+            "js": ["scripts/content.js"],
+            "run_at": "document_end"
         }
-    ]
+ 
+    
+    ],
+
+    "host_permissions": [
+        "<all_urls>"
+    ],
+
+    "externally_connectable": {
+        "matches": ["https://*.example.com/*"]
+    }
 }
