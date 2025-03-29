@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "illume"
+version = "0.1.0"
+description = "illume is an AI-powered learning assistant that helps students understand complex topics during research"
+authors = ["Pablo Leyva <pleyva2004@gmail.com>"]
+packages = [
+    { include = "llm_engineering" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+google-genai = "^0.1.0"
+python-dotenv = "^1.0.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+black = "^23.12.0"
+isort = "^5.13.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api" 
