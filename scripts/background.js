@@ -10,7 +10,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
 let contentPort = null;
 
-chrome.runtime.onConnect.addListener(function(port) {
+chrome.runtime.onConnect.addListener((port) => {
     if (port.name === "sendSiteText") {
         contentPort = port;
 
@@ -29,7 +29,7 @@ chrome.runtime.onConnect.addListener(function(port) {
     }
 });
 
-chrome.contextMenus.onClicked.addListener((info, tab) => {
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     if (contentPort) {
         contentPort.postMessage({ flag: "irrelavent" });
     } else {
@@ -38,7 +38,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   
     if (info.menuItemId === "openSidePanel" && tab?.id) {
 
-        chrome.storage.local.set({selectedText: info.selectionText});
+        await chrome.storage.local.set({selectedText: info.selectionText});
 
         chrome.sidePanel.setOptions({
             tabId: tab.id,
