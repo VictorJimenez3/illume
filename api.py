@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from llm_engineering.app.actions import PabloAI  #causing errors?
-#likely the poetry as he mentioned earlier, ask futurther
+
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -81,7 +82,21 @@ def makeQuestions():
         "explanation" : #current summary of topic called from other API endpoint
     }
     '''
-    json_output = pablo_ai.makeQuestions(response["keywords"], response["explanation"])
+    json_output = pablo_ai.makeQuestions(response["keyword"], response["explanation"])
+    
+    #parse JSON formatted questions and answers
+    questions, answers = json_output["questions_raw"], json_output["answers_raw"]
+    with open("tests/q1.txt", "w") as f:
+        questions_formatted = [x.strip() for x in questions.split("\n") if x]
+        f.write(jsonify(questions_formatted))
+
+    with open("tests/a1.txt", "w") as f:
+        y = [x.strip() for x in answers.split("\n") if x]
+        answers_formatted = []
+        for i in range(len(y - 1)):
+            answers_formatted.append((y[i], y[i + 1])) #
+        f.write(jsonify(answers_formatted))
+
     json_output.update({"status" : "success"})
     return jsonify(json_output), 200
            
@@ -135,10 +150,6 @@ def makeNewQuestions():
     json_output.update({"status" : "success"})
     return jsonify(json_output), 200
 
-
-
-# when you make for multiple users fix this implementation for 
-# Pablo AI
 pablo_ai = PabloAI()
 
 if __name__ == '__main__':

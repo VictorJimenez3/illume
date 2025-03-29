@@ -1,0 +1,14 @@
+[
+    "Answer 1: c) Gamma (\u03b3)", 
+    "Explanation: Euler's constant is conventionally denoted by the lowercase Greek letter gamma (\u03b3). This is standard mathematical notation.", 
+    "", 
+    "Answer 2: c) 0.57721", 
+    "Explanation: The approximate numerical value of Euler's constant, to five decimal places, is 0.57721.", 
+    "", 
+    "Answer 3: False", 
+    "Explanation: It is unknown whether Euler's constant is rational or irrational. This is a major open question in mathematics.", 
+    "", 
+    "Answer 4: logarithm", 
+    "Explanation: Euler's constant is defined as the limit of the difference between the harmonic series and the natural logarithm. The limit is calculated as the number of terms in the harmonic series approaches infinity.",
+    ""
+]

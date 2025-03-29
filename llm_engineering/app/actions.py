@@ -57,8 +57,8 @@ class PabloAI:
         gemini_client.close()
 
         results = {
-            "questions": questions,
-            "answers": answers
+            "questions_raw": questions,
+            "answers_raw": answers
         }
 
         return results
