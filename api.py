@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from llm_engineering.app.actions import PabloAI  #causing errors?
-#likely the poetry as he mentioned earlier, ask futurther
+
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -72,6 +73,19 @@ def makeQuestions():
     """
     Creates initial questions for quiz, init summary must be called prior 
     and included within body
+
+    {
+        questions : [{
+            question: "how are you?",
+            type: mc / oe
+
+            options: [{
+                text: "option 1",
+                correct: true / false
+                explanation: "explanation for 1" / NULL
+            }] # options will be of length one if O-E
+        }]
+    }
     """
     response = request.json
 
@@ -86,8 +100,39 @@ def makeQuestions():
         "explanation" : #current summary of topic called from other API endpoint
     }
     '''
-    json_output = pablo_ai.makeQuestions(response["keywords"], response["explanation"])
-    json_output.update({"status" : "success"})
+    json_output = pablo_ai.makeQuestions(response["keyword"], response["explanation"])
+    
+    #parse JSON formatted questions and answers
+    questions, answers = json_output["questions_raw"], json_output["answers_raw"]
+    with open("tests/q1.txt", "w") as f:
+        y = [x.strip() for x in questions.split("\n")]
+        questions_formatted = []
+        current_question_buffer = []
+        for sentence in y:
+            if not sentence: #double newline
+                questions_formatted.append(current_question_buffer)
+                current_question_buffer = []
+            else:
+                current_question_buffer.append(sentence)
+        #QUESTIONS FORMATTED STARTS WITH QUESTION, FOLLOWED WITH MC OPTIONS IF EXISTS
+        print(questions_formatted)
+        f.write(json.dumps(questions_formatted))
+
+    with open("tests/a1.txt", "w") as f:
+        y = [x.strip() for x in answers.split("\n") if x]
+        answers_formatted = []
+        for i in range(len(y) - 1):
+            answers_formatted.append((y[i], y[i + 1])) 
+        
+        #ANSWERS FORMATTED is [(answer, explanation), ...]
+        f.write(json.dumps(answers_formatted))
+
+    # final = {
+    #     "questions" : [
+    #         x for x in question_bodies
+    #     ]
+    # }
+    
     return jsonify(json_output), 200
            
 
@@ -140,10 +185,6 @@ def makeNewQuestions():
     json_output.update({"status" : "success"})
     return jsonify(json_output), 200
 
-
-
-# when you make for multiple users fix this implementation for 
-# Pablo AI
 pablo_ai = PabloAI()
 
 if __name__ == '__main__':
