@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
           await chrome.storage.local.set({inQuiz: true});
           
           quizWindow = window.open('quiz.html', '_blank');
+          //TODO CHANGE CURRENT WINDOW WITH MESSAGING SYSTEM UPON FORM SUBMISSION
 
           // Start polling every 500ms to check if it's closed. If it is we re-allow the opportunity to open another by changing local-storage flag
           quizPollInterval = setInterval(async () => {
