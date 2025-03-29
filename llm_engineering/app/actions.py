@@ -5,7 +5,8 @@ from llm_engineering.infrastructure import clean_wiki_content
 
 class PabloAI:
     def __init__(self):
-        self.client
+        # Starting PabloAI
+        pass
 
     def start(self, keyword: str, data: str) -> dict:
         print("Starting RAG ...")

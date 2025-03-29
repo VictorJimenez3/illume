@@ -2,9 +2,9 @@
 Application module for main operations
 """
 
-from .actions import start, runQuiz
+from .actions import PabloAI
 
-__all__ = ['start', 'runQuiz']
+__all__ = ['PabloAI']
 
 """
 LLM Engineering app package.
