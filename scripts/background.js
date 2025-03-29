@@ -1,8 +1,9 @@
 // once this extension is installed, perform this action
 chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({
-        id: "illume",
+        id: "openSidePanel",
         title: "Learn about \"%s\" with illume!", 
+      
         contexts: ["selection"], 
     })
 });
@@ -28,14 +29,23 @@ chrome.runtime.onConnect.addListener(function(port) {
     }
 });
 
-
-chrome.contextMenus.onClicked.addListener(function(info, tab) {
+chrome.contextMenus.onClicked.addListener((info, tab) => {
     if (contentPort) {
         contentPort.postMessage({ flag: "irrelavent" });
     } else {
         console.warn("No connected content script to send message to.");
     }
+  
+    if (info.menuItemId === "openSidePanel" && tab?.id) {
 
-    // optional: do something with info.selectionText
+        chrome.storage.local.set({selectedText: info.selectionText});
+
+        chrome.sidePanel.setOptions({
+            tabId: tab.id,
+            path: "templates/sidepanel.html",
+            enabled: true
+        }, () => {
+            chrome.sidePanel.open({ tabId: tab.id });
+        });
+    }
 });
-
