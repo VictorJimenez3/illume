@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('learnMoreButton').addEventListener('click', async function() {
 
-        if(!(await chrome.storage.session.get('inQuiz'))["inQuiz"]) {
+        if(!(await chrome.storage.local.get('inQuiz'))["inQuiz"]) {
           await chrome.storage.local.set({inQuiz: true});
           
           quizWindow = window.open('quiz.html', '_blank');

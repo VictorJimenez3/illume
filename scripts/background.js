@@ -38,7 +38,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   
     if (info.menuItemId === "openSidePanel" && tab?.id) {
 
-        await chrome.storage.local.set({selectedText: info.selectionText});
+        chrome.storage.local.set({selectedText: info.selectionText});
 
         chrome.sidePanel.setOptions({
             tabId: tab.id,
