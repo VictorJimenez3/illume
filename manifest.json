@@ -9,14 +9,18 @@
     "permissions": 
     ["storage", 
     "activeTab",
+    "sidePanel",
     "contextMenus"],
     "action": {
-        "default_popup": "popup.html"
+        "default_popup": "templates/popup.html"
     }, 
+    "side_panel": {
+    "default_path": "templates/sidepanel.html"
+    },
     "content_scripts": [
         {
             "matches": ["https://*.google.com/*"],
-            "js": ["content.js"]
+            "js": ["scripts/content.js"]
         }
     ]
 }
