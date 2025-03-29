@@ -25,16 +25,64 @@ The core module that handles AI interactions through Google's Gemini model:
   - Implements text generation capabilities
 
 - **Core Operations** (`models/operations.py`)
-  - `create_word_explanation()`: Generates contextual word definitions
-  - `create_questions()`: Generates relevant assessment questions
-  - `create_answers()`: Produces detailed answers with explanations
-  - `create_initial_summary()`: Summarizes input context
+  - `create_word_explanation(keyword: str, data: str) -> str`: Generates contextual word definitions
+  - `create_questions(keyword: str, text: str) -> str`: Generates relevant assessment questions
+  - `create_answers(questions: str) -> str`: Produces detailed answers with explanations
+  - `create_initial_summary(data: str) -> str`: Summarizes input context
+  - `create_new_questions(wrong_questions: str, keyword: str, text: str) -> str`: Generates new questions based on incorrect answers
+  - `create_summary_adjustment(keyword: str, new_questions: str, new_answers: str) -> str`: Creates an adjusted summary based on new Q&A
   - Each operation implements specific prompting strategies
 
 - **Infrastructure Layer** (`infrastructure/`)
   - `clean_wiki_content()`: Preprocesses Wikipedia text data
   - Manages data loading and cleaning operations
   - Handles file I/O for test data
+
+### Operation Functions Documentation
+
+The following functions are available in `llm_engineering/models/operations.py`:
+
+1. **create_initial_summary(data: str) -> str**
+   - Purpose: Creates an initial summary of the provided data
+   - Parameters:
+     - `data`: The text content to summarize
+   - Returns: A string containing the generated summary
+
+2. **create_questions(keyword: str, text: str) -> str**
+   - Purpose: Generates 4 assessment questions about a specific keyword
+   - Parameters:
+     - `keyword`: The topic to generate questions about
+     - `text`: The context text to base questions on
+   - Returns: A string containing 4 formatted questions (multiple choice, true/false, fill-in-blank)
+
+3. **create_answers(questions: str) -> str**
+   - Purpose: Generates answers and explanations for provided questions
+   - Parameters:
+     - `questions`: The questions to answer
+   - Returns: A string containing answers and explanations for each question
+
+4. **create_new_questions(wrong_questions: str, keyword: str, text: str) -> str**
+   - Purpose: Generates new questions focusing on previously incorrect answers
+   - Parameters:
+     - `wrong_questions`: Questions that were answered incorrectly
+     - `keyword`: The topic to focus on
+     - `text`: The context text
+   - Returns: A string containing 4 new questions focusing on reinforcement
+
+5. **create_word_explanation(keyword: str, data: str) -> str**
+   - Purpose: Creates a detailed explanation of a keyword in context
+   - Parameters:
+     - `keyword`: The word to explain
+     - `data`: The article context
+   - Returns: A string containing the word's meaning and contextual explanation
+
+6. **create_summary_adjustment(keyword: str, new_questions: str, new_answers: str) -> str**
+   - Purpose: Creates an adjusted explanation based on new Q&A
+   - Parameters:
+     - `keyword`: The topic being explained
+     - `new_questions`: The new questions generated
+     - `new_answers`: The answers to the new questions
+   - Returns: A string containing the adjusted explanation
 
 #### 2. Application Logic (`app/`)
 - **PabloAI Class** (`actions.py`)
@@ -131,7 +179,6 @@ The project uses several development tools to maintain code quality:
 3. Write docstrings for all public functions and classes
 4. Keep functions focused and single-purpose
 5. Write unit tests for new features
-
 
 ### Code Formatting
 ```bash
