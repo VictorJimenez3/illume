@@ -1,120 +1,110 @@
-from llm_engineering.models import GeminiClient, create_word_explanation, create_questions, create_answers, create_new_questions
+from llm_engineering.models import GeminiClient, create_word_explanation, create_questions, create_answers, create_new_questions, create_summary_adjustment
 from llm_engineering.infrastructure import clean_wiki_content
 
 
 
 class PabloAI:
     def __init__(self):
-        # Starting PabloAI
+        # Starting PabloAI'
         pass
 
-    def start(self, keyword: str, data: str) -> dict:
-        print("Starting RAG ...")
+    def makeSummary(self, keyword: str, data: str) -> dict:
+        print("Making Initial Explanation ...")
         
         # Test GeminiClient import
-        try:
-            gemini_client = GeminiClient()
-            print("✓ GeminiClient imported successfully")
-        except Exception as e:
-            print(f"✗ GeminiClient error: {str(e)}")
+        gemini_client = GeminiClient()
+        print("✓ GeminiClient imported successfully")
         
         # Test get_data and create_initial_summary
-        try: 
-            cleaned_data = clean_wiki_content(data)
-            print("✓ data imported and cleaned successfully")   
-            
-            # Test create_word_explanation
-            explanation = create_word_explanation(keyword, cleaned_data)
+        cleaned_data = clean_wiki_content(data)
+        print("✓ data imported and cleaned successfully")   
+        
+        # Test create_word_explanation
+        explanation = create_word_explanation(keyword, cleaned_data)
 
-            print("✓ create_word_explanation imported and called successfully")
-            print("\nExplanation:")
-            print(explanation)
-            
-            split_explanation = explanation.split("\n")
+        print("✓ create_word_explanation imported and called successfully")
+        print("\nExplanation:")
+        print(explanation)
+        
+        split_explanation = explanation.split("\n")         
+       
+        gemini_client.close()
 
-            general_explanation = split_explanation[0]
-            
-            # Test create_questions
-            questions = create_questions(keyword, general_explanation)
-            print("✓ create_questions imported and called successfully")
-            print("\nQuestions:")
-            print(questions)
+        results = {
+            "cleaned_data": cleaned_data,
+            "general_explanation": split_explanation[0],
+            "detailed_explanation": split_explanation[1]
+        }
+        
+        return results
 
-            # Test create_answers
-            answers = create_answers(questions)
-            print("✓ create_answers imported and called successfully")
-            print("\nAnswers:")
-            print(answers)
-            
+    def makeQuestions(self, keyword: str, explanation: str) -> dict:
+        print("Making Initial Questions ...")
 
-        except Exception as e:
-            print(f"✗ Processing Error: {str(e)}")
+        gemini_client = GeminiClient()
+        print("✓ GeminiClient imported successfully")
 
-        finally:
-            gemini_client.close()
+        questions = create_questions(keyword, explanation)
+        print("✓ create_questions imported and called successfully")
+        print("\nQuestions:")
+        print(questions)
 
-            results = {
-                "explanation": general_explanation,
-                "questions": questions,
-                "answers": answers
-            }
-            
-            return results
+        answers = create_answers(questions)
+        print("✓ create_answers imported and called successfully")
+        print("\nAnswers:")
+        print(answers)
 
+        gemini_client.close()
 
-    def runQuiz(self, keyword: str, data: str, wrong_questions: str) -> dict:
-        print("Starting Quiz ...")
+        results = {
+            "questions": questions,
+            "answers": answers
+        }
 
-        try:
-            gemini_client = GeminiClient()
-            print("✓ GeminiClient imported successfully")
-        except Exception as e:
-            print(f"✗ GeminiClient error: {str(e)}")
+        return results
 
+    def makeSummaryAdjustment(self, keyword: str, new_questions: str, new_answers: str) -> dict:
+        print("Making Summary Adjustment ...")
 
-        try:
-            cleaned_data = clean_wiki_content(data)
-            print("✓ data imported and cleaned successfully")
+        GeminiClient()
+        print("✓ GeminiClient imported successfully")  
 
-            new_questions = create_new_questions(keyword, cleaned_data, wrong_questions)
-            print("✓ create_new_questions imported and called successfully")
-            print("\nNew Questions:")
-            print(new_questions)
+        summary_adjustment = create_summary_adjustment(keyword, new_questions, new_answers)
+        print("✓ create_summary_adjustment imported and called successfully")
+        print("\nSummary Adjustment:")
+        print(summary_adjustment)
 
-            answers = create_answers(new_questions)
-            print("✓ create_answers imported and called successfully")
-            print("\nAnswers:")
-            print(answers)
+        results = {
+            "summary_adjustment": summary_adjustment
+        }
 
-        except Exception as e:
-            print(f"✗ Processing Error: {str(e)}")
+        return results    
 
-        finally:
-            gemini_client.close()
+    def makeNewQuestions(self, keyword: str, data: str, wrong_questions: str) -> dict:
+        print("Making New Questions ...")
 
-            results = {
-                "new_questions": new_questions,
-                "answers": answers
-            }
+        gemini_client = GeminiClient()
+        print("✓ GeminiClient imported successfully")
 
-            return results
+        cleaned_data = clean_wiki_content(data)
+        print("✓ data imported and cleaned successfully")
 
-def main():
-    # Example usage
-    pablo_ai = PabloAI()
+        new_questions = create_new_questions(keyword, cleaned_data, wrong_questions)
+        print("✓ create_new_questions imported and called successfully")
+        print("\nNew Questions:")
+        print(new_questions)
+
+        new_answers = create_answers(new_questions)
+        print("✓ create_answers imported and called successfully")
+        print("\nAnswers:")
+        print(new_answers)
+
+        gemini_client.close()
+
+        results = {
+            "new_questions": new_questions,
+            "new_answers": new_answers
+        }
+
+        return results
     
-    # Example keyword and data
-    keyword = "Python programming"
-    data = "Python is a high-level, interpreted programming language known for its simplicity and readability."
-    
-    # Run the initial learning session
-    results = pablo_ai.start(keyword, data)
-    
-    # Example of running a quiz with wrong questions
-    wrong_questions = "What is Python? A: A snake"
-    quiz_results = pablo_ai.runQuiz(keyword, data, wrong_questions)
-    
-    return results, quiz_results
-
-if __name__ == "__main__":
-    main()

@@ -1,4 +1,3 @@
-from llm_engineering.infrastructure.getData import get_data
 from .gemini_client import GeminiClient
 
 
@@ -52,6 +51,8 @@ def create_answers(questions):
     Answer 2: The slope is the rise over run.
     Explanation:
     Explain the answer in a way that is easy to understand. Ensure you add why the answer is correct. Short and concise.
+    
+    Styling: DO NOT USE ANY MARKDOWN OR ANY OTHER FORMATTING. JUST THE PLAIN TEXT.
     """
     return client.generate_text(prompt)
 
@@ -105,17 +106,28 @@ def create_word_explanation(keyword: str, data: str) -> str:
     - DO NOT START WITH 'Here is the explanation for the word' or anything similar.
     - DO NOT START WITH 'Here is the explanation for the word' or anything similar.
     - DO NOT START WITH 'Here is the explanation for the word' or anything similar.
+
+    Styling: DO NOT USE ANY MARKDOWN OR ANY OTHER FORMATTING. JUST THE PLAIN TEXT.
+
     """
     
     return client.generate_text(prompt)
 
 
+def create_summary_adjustment(keyword: str, new_questions: str, new_answers: str) -> str:
+    client = GeminiClient()
+    prompt = f"""
+    Please create a small explanation of the keyword '{keyword}' in the context of the following questions and answers.
+    The new questions are: {new_questions}
+    The new answers are: {new_answers}
+    The keyword is: {keyword}
 
+    Ensure that the explanation is concise and to the point. The explanation should allow the user to understand the keyword '{keyword}' in the context of the questions and answers.
+    
+    Styling: DO NOT USE ANY MARKDOWN OR ANY OTHER FORMATTING. JUST THE PLAIN TEXT.
 
-
-
-
-
+    """
+    return client.generate_text(prompt)
 
 
 
