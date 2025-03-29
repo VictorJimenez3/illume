@@ -39,6 +39,11 @@ Calls should procede as:
 5) repeat 3-5 again until user stops
 """
 
+
+@app.route('/')
+def homepage():
+    return "<h1> HI LeBron James </h1>"
+
 @app.route('/api/makeSummary', methods=['POST']) #DONE
 def makeSummary():
     """
