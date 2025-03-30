@@ -401,5 +401,6 @@ FodyWeavers.xsd
 
 answers.json
 
-
 .env
+
+./tests/parsing/*
