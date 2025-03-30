@@ -43,6 +43,7 @@ def create_answers(questions):
     Ensure that the answers are correct and relevant to the questions.
     Ensure that the answers are concise and to the point.
     Ensure that the answers are in the same order as the questions.
+    
 
     Output:
     - DO NOT START WITH 'Here are the answers to the questions' or anything similar.
@@ -76,7 +77,15 @@ def create_new_questions(wrong_questions: str, keyword: str, text: str):
     The questions should be in the following format:
     
     1. Multiple choice question
+        a. Option 1
+        b. Option 2
+        c. Option 3
+        d. Option 4
     2. Multiple choice question
+        a. Option 1
+        b. Option 2
+        c. Option 3
+        d. Option 4
     3. True or false question
     4. Fill in the blank question(Should be a single word or short expression which should be easy to fill in and should be derived from the text, no symbols or special characters)
 
