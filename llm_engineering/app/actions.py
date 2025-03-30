@@ -1,5 +1,5 @@
 from llm_engineering.models import GeminiClient, create_word_explanation, create_questions, create_answers, create_new_questions, create_summary_adjustment
-from llm_engineering.models.comfyui_client import ComfyUIClient
+# from llm_engineering.models.comfyui_client import ComfyUIClient
 from llm_engineering.infrastructure import clean_wiki_content
 
 
@@ -7,7 +7,7 @@ from llm_engineering.infrastructure import clean_wiki_content
 class PabloAI:
     def __init__(self):
         # Starting PabloAI'
-        self.comfyui_client = ComfyUIClient()
+        # self.comfyui_client = ComfyUIClient()
         pass
 
     def makeSummary(self, keyword: str, data: str) -> dict:
