@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from llm_engineering.app.actions import PabloAI  #causing errors?
-
+from youtube_video_finder import youtubeSearch #matt commit this
 from pprint import pprint
 import json
 
@@ -339,15 +339,21 @@ def makeNewQuestions():
 
 @app.route('/api/youtubeVideoFinder', methods=['POST'])
 def youtubeVideoFinder():
-    response = request.json()
-    topic = response['topic']
+    response = request.json
+    topic : str = response['topic']
+
+    try:
+        assert("topic" in response)
+    except:
+        return jsonify({"status" : "failure, incorrect parameters for endpoint"}), 500
+
     '''
     {
-    topic:"whatever the user highlighted"
+    "topic":"whatever the user highlighted"
     }
     '''
     #returns json of {title:"", link:""}
-    return youtubeVideoFinder(topic)
+    return youtubeSearch(response["topic"]) #matt commit this, this was the mistake
 
 
 if __name__ == '__main__':

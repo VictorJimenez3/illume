@@ -20,8 +20,7 @@ RUN curl -sSL https://install.python-poetry.org/ | python3 - && \
 RUN poetry install
 
 EXPOSE 5000
-CMD ["python3", "./api.py"]
-
+CMD python3 ./api.py
 #how to run:
 #docker build -t my-flask-app . 
 #docker run -p 5000:5000 my-flask-app

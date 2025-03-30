@@ -1,5 +1,7 @@
-from .youtube_video_finder import youtube_search
-__all__ = ['youtube_search']
+#__init__.py
+from .youtube_video_finder import youtubeSearch
+
+__all__ = ['youtubeSearch']
 '''
 import for the youtube_search function(query)
 '''
