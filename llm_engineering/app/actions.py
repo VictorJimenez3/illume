@@ -1,4 +1,5 @@
 from llm_engineering.models import GeminiClient, create_word_explanation, create_questions, create_answers, create_new_questions, create_summary_adjustment
+from llm_engineering.models.comfyui_client import ComfyUIClient
 from llm_engineering.infrastructure import clean_wiki_content
 
 
@@ -6,6 +7,7 @@ from llm_engineering.infrastructure import clean_wiki_content
 class PabloAI:
     def __init__(self):
         # Starting PabloAI'
+        self.comfyui_client = ComfyUIClient()
         pass
 
     def makeSummary(self, keyword: str, data: str) -> dict:
@@ -107,5 +109,41 @@ class PabloAI:
             "new_answers": new_answers
         }
 
+        return results
+
+    def generate_video(self, keyword: str, explanation: str) -> dict:
+        """
+        Generate a video visualization for the keyword and its explanation.
+        
+        Args:
+            keyword (str): The keyword to visualize
+            explanation (str): The explanation of the keyword
+            
+        Returns:
+            dict: Dictionary containing the video path and metadata
+        """
+        print("Generating video visualization...")
+        
+        # Create a prompt that combines the keyword and explanation
+        prompt = f"Create a visual representation of {keyword}: {explanation}"
+        
+        try:
+            video_path = self.comfyui_client.generate_video(prompt)
+            print("✓ Video generated successfully")
+            
+            results = {
+                "video_path": video_path,
+                "keyword": keyword,
+                "prompt": prompt
+            }
+            
+        except Exception as e:
+            print(f"✗ Error generating video: {str(e)}")
+            results = {
+                "error": str(e),
+                "keyword": keyword,
+                "prompt": prompt
+            }
+            
         return results
     
