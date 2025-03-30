@@ -102,8 +102,8 @@ class PabloAI:
         gemini_client.close()
 
         results = {
-            "new_questions": new_questions,
-            "new_answers": new_answers
+            "questions_raw": new_questions,
+            "answers_raw": new_answers
         }
 
         return results
