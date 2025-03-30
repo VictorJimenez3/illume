@@ -9,6 +9,10 @@ const OEQuestion = ({ questionData, onNext }) => {
   const [submitted, setSubmitted] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
 
+  const handleFix = () => {
+    setIsCorrect(true);
+  }
+
   const handleSubmitOrNext = () => {
     if (!submitted) {
       const normalizedUserAnswer = userAnswer.trim().toLowerCase();
@@ -84,6 +88,18 @@ const OEQuestion = ({ questionData, onNext }) => {
       fontSize: '1rem',
       cursor: 'pointer',
     },
+    fixButton: {
+      marginTop: '1rem',
+      backgroundColor: '#e4b7a0',
+      color: '#a45c40',
+      padding: '0.6rem 1.25rem',
+      border: 'none',
+      borderRadius: '8px',
+      fontWeight: 'bold',
+      fontSize: '1rem',
+      cursor: 'pointer',
+      margin: '3%'
+    }
   };
 
   return (
@@ -125,6 +141,13 @@ const OEQuestion = ({ questionData, onNext }) => {
       <button onClick={handleSubmitOrNext} style={styles.button}>
         {submitted ? 'Next Question' : 'Submit'}
       </button>
+
+      {/* Additional "I'm right, fix me!" button when answer is incorrect */}
+      {submitted && !isCorrect && (
+        <button onClick={handleFix} style={styles.fixButton}>
+          I'm right, fix me!
+        </button>
+      )}
     </div>
   );
 };

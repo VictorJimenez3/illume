@@ -100,3 +100,30 @@ export async function fetchSummaryAdjustments(keyword, new_questions, new_answer
 
     */
 }
+
+
+
+export async function fetchVideo(topic) {
+    // TODO: wrong_questions to be formatted as string
+    const requestBody = {
+        topic
+    };
+    const response = await fetch(`${API_BASEURL}/youtubeVideoFinder`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody)
+    });
+    if (!response.ok) {
+        throw new Error(`Error fetching questions: ${response.statusText}`);
+    }
+    return await response.json();
+
+    /*
+    expected output
+    {
+    title
+    video_url
+    }
+
+    */
+}

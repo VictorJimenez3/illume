@@ -32,6 +32,8 @@ chrome.runtime.onInstalled.addListener(() => {
   
   chrome.contextMenus.onClicked.addListener((info, tab) => {
 
+  
+
     // content port logic setup
     if (contentPort) {
       contentPort.postMessage({ flag: "irrelavent" });
@@ -44,6 +46,11 @@ chrome.runtime.onInstalled.addListener(() => {
     if (info.menuItemId === "openSidePanel" && tab?.id) {
 
         chrome.storage.local.set({selectedText: info.selectionText});
+
+        // clear quiz_questions storage
+        chrome.storage.local.remove(["quiz_questions"], function() {
+            console.log("quiz_questions cleared");
+        });
 
         chrome.sidePanel.setOptions({
             tabId: tab.id,

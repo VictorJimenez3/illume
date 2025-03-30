@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Quiz from '../quiz/Quiz';
-import { fetchNewQuestions, fetchSummary, fetchSummaryAdjustments } from '../api_helpers';
+import { fetchNewQuestions, fetchSummary, fetchSummaryAdjustments, fetchVideo } from '../api_helpers';
 import { getStorageValue } from '../utils'; 
 
 
@@ -8,6 +8,8 @@ const SidePanel = () => {
   const [selectedWord, setSelectedWord] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isClosingQuiz, setIsClosingQuiz] = useState(false);
+
+  const [videoUrl, setVideoUrl] = useState('https://www.youtube.com/embed/VIDEO_ID'); 
 
   const [summaryArr, setSummaryArr] = useState([]);
   const [detailedSummary, setDetailedSummary] = useState([]);
@@ -30,9 +32,20 @@ const SidePanel = () => {
           const data = await fetchSummary(word, siteText);
           chrome.storage.local.set({ summary: data.general_explanation });
           setSummaryArr(prev => [data.general_explanation, ...prev]);
+
+          // video logic
+          const videoData = await fetchVideo(word);
+
+          const match = videoData.media_link.video_url.match(/v=([^&]+)/);
+          const videoId = match ? match[1] : null;
+          // const urlObj = new URL(videoData.video_url);
+          // const videoId = urlObj.searchParams.get('v');
+          setVideoUrl(`https://www.youtube.com/embed/${videoId}`); // Assuming the API returns a video URL
+
         //   setSummary(data.general_explanation);
           if (data.detailed_explanation) {
             // chrome.storage.local.set({ detailedExplanation: data.detailed_explanation });
+            console.log(videoData);
             setDetailedSummary(data.detailed_explanation);
           }
         } catch (error) {
@@ -56,8 +69,8 @@ const SidePanel = () => {
     // console.log("Closing quiz modal");
     // // make API call to get new questions
     try {
-        // const siteText = await getStorageValue("siteText");
-        const siteText = "dummy site text about nothing crazy";
+        const siteText = await getStorageValue("siteText");
+        // const siteText = "dummy site text about nothing crazy";
         const wrong_questions = await getStorageValue("wrong_questions");
 
         // Make the API call to fetch new questions
@@ -69,7 +82,6 @@ const SidePanel = () => {
 
         try {
             // API call for summary adjustments
-            setIsRefreshing(true);
             const newData = await fetchSummaryAdjustments(selectedWord, data.questions_raw, data.answers_raw);
             setSummaryArr(prev => [newData.summary_adjustment, ...prev]);
             
@@ -78,7 +90,6 @@ const SidePanel = () => {
             console.error("Error fetching summary adjustments:", error);
         }
 
-        setIsRefreshing(false);
         setIsClosingQuiz(false);
 
     } catch (error) {
@@ -111,8 +122,8 @@ const SidePanel = () => {
 
     try {
         // API call for summary adjustments
-        const new_questions = "dummy new questions";
-        const new_answers = "dummy new answers";
+        const new_questions = "sample new questions";
+        const new_answers = "sample new answers";
         const newData = await fetchSummaryAdjustments(selectedWord, new_questions, new_answers);
         setSummaryArr(prev => [newData.summary_adjustment, ...prev]);
 
@@ -302,6 +313,19 @@ const SidePanel = () => {
         </div>
         
       )}
+
+      {/* Embedded Video */}
+      <div style={{ margin: '0 auto 1rem', width: '100%', maxWidth: '560px', marginTop: '1rem', borderRadius: '12px' }}>
+        <iframe
+          width="100%"
+          height="315"
+          src={videoUrl} // Replace VIDEO_ID with your video identifier
+          title="Embedded Video"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        ></iframe>
+      </div>
   
       <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
         <button
@@ -318,7 +342,7 @@ const SidePanel = () => {
             cursor: 'pointer',
           }}
         >
-          Open Quiz
+          Test Your Knowledge!
         </button>
       </div>
   
@@ -347,7 +371,7 @@ const SidePanel = () => {
               selectedWord={selectedWord}
               summary={summaryArr[currentSummaryIndex]}
               onExit={closeQuizModal}
-              isRefreshing={isRefreshing}
+              isRefreshing={isClosingQuiz}
             />
           </div>
         </div>
