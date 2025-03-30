@@ -8,12 +8,6 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-#  placeholder functions to abstract
-grab_init_summary = lambda x, y: [None,] 
-grab_init_questions = lambda x, y: [None,]
-grab_init_recursive_question = lambda : [None,]
-grab_init_recursive_summary = lambda : [None,]
-
 # temporary pablo ai call, implement custom dictionary to have multiple users after 
 # I finish the basic data pipelines
 pablo_ai = PabloAI()
@@ -338,7 +332,18 @@ def makeNewQuestions():
     final.update(json_output)
     return jsonify(final), 200
 
-pablo_ai = PabloAI()
+@app.route('/api/youtubeVideoFinder', methods=['POST'])
+def youtubeVideoFinder():
+    response = request.json()
+    topic = response['topic']
+    '''
+    {
+    topic:"whatever the user highlighted"
+    }
+    '''
+    #returns json of {title:"", link:""}
+    return youtubeVideoFinder(topic)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
