@@ -1,2 +1,2 @@
 ***json_output***
-{"summary_adjustment": "Euler's constant, approximately 0.57721 and denoted by the Greek letter gamma (\u03b3), is a mathematical constant defined as the limiting difference between the harmonic series and the natural logarithm. It is unknown whether it is rational or irrational.\n", "status": "success"}
+{"summary_adjustment": "Euler's constant, denoted by \u03b3 (gamma), is a mathematical constant approximately equal to 0.57721. It represents the limiting difference between the harmonic series and the natural logarithm. A key unsolved question in mathematics is whether Euler's constant is rational or irrational.\n", "status": "success"}

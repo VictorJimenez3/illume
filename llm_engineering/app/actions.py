@@ -59,7 +59,6 @@ class PabloAI:
         print("\nAnswers:")
         print(answers)
 
-
         split_answers = answers.split("\n\n")
 
         gemini_client.close()

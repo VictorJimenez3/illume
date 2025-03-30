@@ -84,95 +84,16 @@ def makeQuestions():
     }
     '''
     json_output = pablo_ai.makeQuestions(response["keyword"], response["explanation"])
-    
-    #parse JSON formatted questions and answers
     questions, answers = json_output["questions_raw"], json_output["answers_raw"]
-    
-    #QUESTIONS FORMATTED STARTS WITH QUESTION, FOLLOWED WITH MC OPTIONS IF EXISTS
-    y = [x.strip() for x in questions.split("\n")]
-    questions_formatted = []
-    current_question_buffer = []
-    for sentence in y:
-        if not sentence: #double newline
-            questions_formatted.append(current_question_buffer)
-            current_question_buffer = []
-        else:
-            current_question_buffer.append(sentence)
 
-    #ANSWERS FORMATTED is [(answer, explanation), ...]
-    y = [x.strip() for x in answers.split("\n") if x]
-    answers_formatted = []
-    for i in range(0, len(y) - 1, 2):
-        answers_formatted.append((y[i], y[i + 1]))
+    print(answers)
 
-    final = {
-        "questions" : []
-    }
-
-    def isCorrect(choice, answer):
-        # Fixed: Add error handling for when ")" isn't found
-        choice_pos = choice.find(")")
-        answer_pos = answer.find(")")
-        
-        if choice_pos < 1 or answer_pos < 1:
-            return False  # Invalid format
-            
-        currentChoice = choice[choice_pos - 1]
-        answerChoice = answer[answer_pos - 1]
-        return currentChoice == answerChoice
-
-    for i, q in enumerate(questions_formatted):
-        if not len(q):
-            continue
-
-        # Fixed: Create a new question object for each iteration
-        question = {}
-        question["question"] = q[0]
-        question["type"] = "mc" if len(q) > 1 or "true" in q[0].lower() or "false" in q[0].lower() else "oe"
-
-        if question["type"] == "oe":
-            question["options"] = [{
-                "text": answers_formatted[i][0],
-                "correct": True,
-                "explanation": answers_formatted[i][1]
-            }]
-            question["oeActual"] = [*answers_formatted[i]]
-
-        else:
-            question["options"] = []
-        
-        # Fixed: Create a copy instead of a reference
-        choices = q[1:]  # Using slicing to create a copy
-        for choice in choices:  # all choices if mc
-            question["oeActual"] = [*answers_formatted[i]]
-
-            question["options"].append({
-                "text": choice,
-                "correct": isCorrect(choice, answers_formatted[i][0]),
-                "explanation": None if not isCorrect(choice, answers_formatted[i][0]) else answers_formatted[i][1] 
-            })
-
-        if not len(question["options"]) and question["type"] == "mc": #t/f 
-            question["options"].append({
-                "text": "True",
-                "correct": "true" in answers_formatted[i][0].lower(),
-                "explanation": answers_formatted[i][1] if "true" in answers_formatted[i][0].lower() else None
-            })
-            question["options"].append({
-                "text": "False",
-                "correct": "false" in answers_formatted[i][0].lower(),
-                "explanation": answers_formatted[i][1] if "false" in answers_formatted[i][0].lower() else None
-            })
-            question["tfActual"] = [*answers_formatted[i]]
-        
-        final["questions"].append(question)
-    
-    final.update(json_output)
-    with open("tests/parsing/makeQuestions/input.txt", "w") as f:
-        f.write("***json_output***\n" + json.dumps(json_output))
-
-    with open("tests/parsing/makeNewQuestions/output.txt", "w") as f:
-        f.write("***FINAL***\n" + json.dumps(final))
+    final = {}
+    groups = zip(questions, answers)
+    for question, answer in groups:
+        pprint([x.strip() for x in question.split("\n") if x])
+        print(answer.split("\n"))
+        print("\n")
 
     return jsonify(final), 200
 
@@ -242,7 +163,6 @@ def makeNewQuestions():
     '''
 
     json_output = pablo_ai.makeNewQuestions(response["keyword"], response["data"], response["wrong_questions"])
-    
     #parse JSON formatted questions and answers
     questions, answers = json_output["questions_raw"], json_output["answers_raw"]
     
