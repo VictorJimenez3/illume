@@ -2,12 +2,21 @@
 # cmd: ["modal", "run", "--detach", "llm_engineering/models/mochi_client.py", "--num-inference-steps", "64"]
 # ---
 
+# # Text-to-video generation with Mochi
+
+# This example demonstrates how to run the [Mochi 1](https://github.com/genmoai/models)
+# video generation model by [Genmo](https://www.genmo.ai/) on Modal.
+
+
+# At the time of writing, Mochi is supported natively in the [`diffusers`](https://github.com/huggingface/diffusers) library,
+# but only in a pre-release version.
+# So we'll need to install `diffusers` and `transformers` from GitHub.
+
 import string
 import time
 from pathlib import Path
 
 import modal
-import boto3
 
 app = modal.App()
 
@@ -50,7 +59,17 @@ MODEL_PATH = Path("/models")  # remote path for saving model weights
 MINUTES = 60
 HOURS = 60 * MINUTES
 
-## Downloading the model
+# ## Downloading the model
+
+# We download the model weights into Volume cache to speed up cold starts.
+
+# ```bash
+# modal run --detach mochi::download_model
+# ```
+
+# The `--detach` flag ensures the download will continue
+# even if you close your terminal or shut down your computer
+# while it's running.
 
 
 with image.imports():
@@ -76,6 +95,7 @@ def download_model(revision="83359d26a7e2bbe200ecbfda8ebff850fd03b545"):
 
 
 ## Setting up our Mochi class
+
 
 # We configure it to use our image, the distributed volume, and a single H100 GPU.
 @app.cls(
@@ -105,7 +125,7 @@ class Mochi:
         negative_prompt="",
         num_inference_steps=200,
         guidance_scale=4.5,
-        num_frames=19,
+        num_frames=19 * 20,
     ):
         frames = self.pipe(
             prompt=prompt,
@@ -122,7 +142,14 @@ class Mochi:
         return mp4_name
 
 
-## Running Mochi inference
+# ## Running Mochi inference
+
+# We can trigger Mochi inference from our local machine by running the code in
+# the local entrypoint below.
+
+# It ensures the model is downloaded to a remote volume,
+# spins up a new replica to generate a video, also saved remotely,
+# and then downloads the video to the local machine.
 
 # You can trigger it with:
 # ```bash
@@ -163,18 +190,6 @@ def main(
     local_path = local_dir / mp4_name
     local_path.write_bytes(b"".join(outputs.read_file(mp4_name)))
     print(f"🍡 video saved locally at {local_path}")
-
-    # Upload the video to S3
-    bucket_name = "your-bucket-name"  # Replace with your actual bucket name
-    s3_client = boto3.client('s3')
-    s3_client.upload_file(local_path, bucket_name, mp4_name)
-    
-    # Generate a presigned URL that's valid for 1 hour (3600 seconds)
-    presigned_url = s3_client.generate_presigned_url('get_object',
-        Params={'Bucket': bucket_name, 'Key': mp4_name},
-        ExpiresIn=3600
-    )
-    print(f"🍡 video available at: {presigned_url}")
 
 
 # ## Addenda
