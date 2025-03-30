@@ -26,14 +26,15 @@ class PabloAI:
         print("\nExplanation:")
         print(explanation)
         
-        split_explanation = explanation.split("\n")         
+        split_explanation = explanation.split("\n")   
+        print(split_explanation)      
        
         gemini_client.close()
 
         results = {
             "cleaned_data": cleaned_data,
             "general_explanation": split_explanation[0],
-            "detailed_explanation": split_explanation[1]
+            "detailed_explanation": split_explanation[2]
         }
         
         return results
