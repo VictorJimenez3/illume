@@ -19,7 +19,6 @@ RUN curl -sSL https://install.python-poetry.org/ | python3 - && \
 
 RUN poetry install
 
-
 EXPOSE 5000
 CMD ["python3", "./api.py"]
 
