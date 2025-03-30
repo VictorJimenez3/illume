@@ -120,7 +120,6 @@ class PabloAI:
 
         return results    
 
-  
 
     # def generate_video(self, keyword: str, explanation: str) -> dict:
     #     """
