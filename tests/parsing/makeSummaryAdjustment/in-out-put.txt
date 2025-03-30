@@ -1,2 +1,2 @@
 ***json_output***
-{"summary_adjustment": "In these questions, an 'Example' is used to clarify and illustrate an idea by providing a specific instance, case, or tangible form. It makes abstract concepts easier to understand by grounding them in reality or a relatable scenario. It is typically something concrete and easy to grasp, not an abstract theory or complex idea itself.\n", "status": "success"}
+{"summary_adjustment": "Sensory neurons are nerve cells that carry information about bodily sensations and the environment from sensory receptors (like those in your skin, eyes, and ears) to the brain. They're responsible for allowing you to feel, see, hear, and experience the world around you. They transmit *to* the brain, not from it.\n", "status": "success"}

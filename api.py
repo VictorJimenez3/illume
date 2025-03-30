@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+
 from llm_engineering.app.actions import PabloAI  #causing errors?
+from youtube import youtubeSearch
 
 from pprint import pprint
 import json
@@ -356,15 +358,24 @@ def makeNewQuestions():
         
 @app.route('/api/youtubeVideoFinder', methods=['POST'])
 def youtubeVideoFinder():
-    response = request.json()
+    response = request.json
+
+    try:
+        assert("topic" in response)
+    except:
+        return jsonify({"status" : "Incorrect parameters, missing topic!"}), 500
+
     topic = response['topic']
     '''
     {
     topic:"whatever the user highlighted"
     }
     '''
-    #returns json of {title:"", link:""}
-    return youtubeVideoFinder(topic)
+    
+    return {
+        "media_link" : youtubeSearch(topic),
+        "status" : "success"
+    }
 
 
 if __name__ == '__main__':
