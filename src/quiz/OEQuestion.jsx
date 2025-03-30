@@ -16,6 +16,22 @@ const OEQuestion = ({ questionData, onNext }) => {
       const normalizedCorrectAnswer = correctAnswer.trim().toLowerCase();
       const check = normalizedUserAnswer && normalizedCorrectAnswer.includes(normalizedUserAnswer);
       setIsCorrect(check);
+
+        // If the answer is incorrect, store the question text in wrongQuestions.
+      if (!check) {
+        // Get the current wrongQuestions array from storage.
+        chrome.storage.local.get('wrong_questions', (result) => {
+            let wrongArr = result.wrong_questions || [];
+            // Add the current question text.
+            wrongArr.push(question);
+            // Save the updated array back to storage.
+            chrome.storage.local.set({ wrong_questions: wrongArr }, () => {
+            console.log("Stored wrong question:", question);
+            });
+       });
+      }
+
+
       setSubmitted(true);
     } else {
       onNext();

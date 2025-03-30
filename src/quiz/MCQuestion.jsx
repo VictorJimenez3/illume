@@ -21,17 +21,17 @@ const MCQuestion = ({ questionData, onNext }) => {
       // If the selected answer is incorrect, store the question text in wrongQuestions.
       if (selectedOption !== correctIndex) {
         // Get the current wrongQuestions array from storage.
-        chrome.storage.local.get('wrongQuestions', (result) => {
+        chrome.storage.local.get('wrong_questions', (result) => {
           let wrongArr = result.wrongQuestions || [];
           // Add the current question text.
           wrongArr.push(question);
           // Save the updated array back to storage.
-          chrome.storage.local.set({ wrongQuestions: wrongArr }, () => {
+          chrome.storage.local.set({ wrong_questions: wrongArr }, () => {
             console.log("Stored wrong question:", question);
           });
         });
       }
-      
+
       setSubmitted(true);
     } else {
       onNext();
@@ -76,7 +76,7 @@ const MCQuestion = ({ questionData, onNext }) => {
       </ul>
       {submitted && (
         <div>
-          <p><strong>Correct Answer:</strong> Option {correctIndex + 1}</p>
+          <p><strong>Correct Answer:</strong> {options[correctIndex]["text"]}</p>
           <p><strong>Explanation:</strong> {correctExplanation}</p>
         </div>
       )}
