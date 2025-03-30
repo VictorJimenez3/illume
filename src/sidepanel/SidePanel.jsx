@@ -9,7 +9,7 @@ const SidePanel = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isClosingQuiz, setIsClosingQuiz] = useState(false);
 
-  const [videoUrl, setVideoUrl] = useState('https://www.youtube.com/embed/VIDEO_ID'); 
+  const [videoUrl, setVideoUrl] = useState(null); 
 
   const [summaryArr, setSummaryArr] = useState([]);
   const [detailedSummary, setDetailedSummary] = useState([]);
@@ -42,10 +42,10 @@ const SidePanel = () => {
           // const videoId = urlObj.searchParams.get('v');
           setVideoUrl(`https://www.youtube.com/embed/${videoId}`); // Assuming the API returns a video URL
 
-        //   setSummary(data.general_explanation);
+         //   setSummary(data.general_explanation);
           if (data.detailed_explanation) {
             // chrome.storage.local.set({ detailedExplanation: data.detailed_explanation });
-            console.log(videoData);
+            // console.log(videoData);
             setDetailedSummary(data.detailed_explanation);
           }
         } catch (error) {
@@ -314,18 +314,32 @@ const SidePanel = () => {
         
       )}
 
+      {!videoUrl && (
+        <div style={{ marginTop: '1rem', textAlign: 'center' }}>
+          <p style={{ fontSize: '1.1rem', color: '#3a2c1b' }}>
+            No video available for this selected topic yet!
+          </p>
+        </div>
+      )}
+
       {/* Embedded Video */}
-      <div style={{ margin: '0 auto 1rem', width: '100%', maxWidth: '560px', marginTop: '1rem', borderRadius: '12px' }}>
-        <iframe
-          width="100%"
-          height="315"
-          src={videoUrl} // Replace VIDEO_ID with your video identifier
-          title="Embedded Video"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        ></iframe>
-      </div>
+      {videoUrl && (
+
+          <div style={{ margin: '0 auto 1rem', width: '100%', maxWidth: '560px', marginTop: '1rem', borderRadius: '12px' }}>
+          <iframe
+            width="100%"
+            height="315"
+            src={videoUrl} // Replace VIDEO_ID with your video identifier
+            title="Embedded Video"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+          </div>
+
+        )}
+    
+
   
       <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
         <button
