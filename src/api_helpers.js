@@ -82,7 +82,7 @@ export async function fetchSummaryAdjustments(keyword, new_questions, new_answer
         new_questions,
         new_answers
     };
-    const response = await fetch(`${API_BASEURL}/makeSummaryAdjustments`, {
+    const response = await fetch(`${API_BASEURL}/makeSummaryAdjustment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestBody)

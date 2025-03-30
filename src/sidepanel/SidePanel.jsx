@@ -48,42 +48,41 @@ const SidePanel = () => {
     setShowQuiz(true);
   };
 
-  const closeQuizModal = () => {
+  const closeQuizModal = async () => {
      
     // console.log("Closing quiz modal");
     // // make API call to get new questions
-    // try {
-    //     // const siteText = await getStorageValue("siteText");
-    //     const siteText = "dummy site text about nothing crazy";
-    //     const wrong_questions = await getStorageValue("wrong_questions");
+    try {
+        // const siteText = await getStorageValue("siteText");
+        const siteText = "dummy site text about nothing crazy";
+        const wrong_questions = await getStorageValue("wrong_questions");
 
-    //     // Make the API call to fetch new questions
-    //     const data = await fetchNewQuestions(word, siteText, wrong_questions);
+        // Make the API call to fetch new questions
+        const data = await fetchNewQuestions(selectedWord, siteText, wrong_questions);
 
+        // chrome.storage.local.set({ quiz_questions: data.questions });
+        // chrome.storage.local.set({ new_questions_feedback: data.questions_raw });
+        // chrome.storage.local.set({ new_answers_feedback: data.answers_raw });
 
-    //     // chrome.storage.local.set({ quiz_questions: data.questions });
-    //     // chrome.storage.local.set({ new_questions_feedback: data.questions_raw });
-    //     // chrome.storage.local.set({ new_answers_feedback: data.answers_raw });
+        chrome.storage.local.set({ quiz_questions: data.questions }, function () {
+            console.log("Quiz questions stored in local storage");
+        });
 
-    //     chrome.storage.local.set({ quiz_questions: data.questions }, function () {
-    //         console.log("Quiz questions stored in local storage");
-    //     });
-
-    //     // try {
-    //     //     // API call for summary adjustments
-    //     //     const newData = await fetchSummaryAdjustments(word, data.new_questions, data.new_answers);
-    //     //     setSummaryArr(prev => [newData.summary_adjustment, ...prev]);
+        try {
+            // API call for summary adjustments
+            const newData = await fetchSummaryAdjustments(selectedWord, data.questions_raw, data.answers_raw);
+            setSummaryArr(prev => [newData.summary_adjustment, ...prev]);
             
 
-    //     // } catch (error) {
-    //     //     console.error("Error fetching summary adjustments:", error);
-    //     // }
+        } catch (error) {
+            console.error("Error fetching summary adjustments:", error);
+        }
 
         
 
-    // } catch (error) {
-    //     console.error("Error fetching new questions:", error);
-    // }
+    } catch (error) {
+        console.error("Error fetching new questions:", error);
+    }
 
 
 
@@ -112,7 +111,7 @@ const SidePanel = () => {
         // API call for summary adjustments
         const new_questions = "dummy new questions";
         const new_answers = "dummy new answers";
-        const newData = await fetchSummaryAdjustments(word, new_questions, new_answers);
+        const newData = await fetchSummaryAdjustments(selectedWord, new_questions, new_answers);
         setSummaryArr(prev => [newData.summary_adjustment, ...prev]);
 
 
@@ -132,14 +131,19 @@ const SidePanel = () => {
       color: '#a45c40',
       minHeight: '100vh'
     }}>
+        <img
+        src={chrome.runtime.getURL('images/illume_logo.png')}
+        alt="Illume Logo"
+        style={{ display: 'block', margin: '5px auto ', maxWidth: '40px' }}
+        />
       <h2 style={{
         textAlign: 'center',
         color: '#3D0C0C',
         // backgroundColor: '#a45c40',
-        padding: '0.75rem',
+        padding: '0',
         borderRadius: '12px',
         fontSize: '1.5rem',
-        marginBottom: '1rem',
+        margin: '0',
       }}>
         illume
       </h2>
@@ -221,6 +225,20 @@ const SidePanel = () => {
               >
                 ◀
               </button>
+
+
+              <button onClick={handleRefreshSummary} style={{
+                     backgroundColor: '#c38370',
+                     borderColor: '#c38370',
+                   //   padding: '0.5rem 1rem',
+                     borderRadius: '6px',
+                     color: 'white',
+                     cursor: 'pointer'
+                }}>
+                🔄
+               </button>
+
+
               <button
                 onClick={handleNextSummary}
                 style={{
@@ -236,19 +254,7 @@ const SidePanel = () => {
               </button>
             </div>
 
-            <button onClick={handleRefreshSummary} style={{
-                position: 'absolute',
-                bottom: '10px',
-                right: '10px',
-                backgroundColor: '#e4b7a0',
-                border: 'none',
-                padding: '0.4rem 0.8rem',
-                borderRadius: '6px',
-                color: '#a45c40',
-                cursor: 'pointer'
-            }}>
-                🔄
-            </button>
+            
           
   
           <div style={{ marginTop: '1rem', textAlign: 'center' }}>
@@ -278,6 +284,7 @@ const SidePanel = () => {
               textAlign: 'center',
               maxHeight: '200px',
               overflowY: 'auto',
+              fontSize: '1.1rem',
             }}>
               <p>{detailedSummary || "No contextualized explanation available."}</p>
             </div>

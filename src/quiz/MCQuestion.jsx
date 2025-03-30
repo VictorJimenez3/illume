@@ -6,9 +6,9 @@ const MCQuestion = ({ questionData, onNext }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [submitted, setSubmitted] = useState(false);
 
-  // const correctIndex = options.findIndex(option => option.correct);
-  const correctIndex = Math.floor(Math.random() * options[0].length);
-  const correctExplanation = options[correctIndex]?.text || '';
+  const correctIndex = options.findIndex(option => option.correct);
+  // const correctIndex = Math.floor(Math.random() * options[0].length);
+  const correctExplanation = options[correctIndex]?.explanation || '';
 
   const handleOptionClick = (index) => {
     if (!submitted) {

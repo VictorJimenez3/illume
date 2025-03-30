@@ -11,15 +11,23 @@
     "permissions": ["storage", "activeTab", "contextMenus", "scripting", "sidePanel"],
     
     "action": {
+        "default_icon": {
+            "32": "images/popup_logo.png"
+        },
         "default_popup": "index.html"
     }, 
     
     "side_panel": {
         "default_path": "sidepanel.html"
     },
+
+    "icons": {
+        "32": "images/popup_logo.png"
+    },
     
     "content_scripts": [
         {
+            
             "matches": ["<all_urls>"],
             "js": ["content.js"],
             "run_at": "document_idle"
