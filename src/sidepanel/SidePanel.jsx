@@ -6,7 +6,9 @@ import { getStorageValue } from '../utils';
 
 const SidePanel = () => {
   const [selectedWord, setSelectedWord] = useState('');
-//   const [summary, setSummary] = useState('');
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isClosingQuiz, setIsClosingQuiz] = useState(false);
+
   const [summaryArr, setSummaryArr] = useState([]);
   const [detailedSummary, setDetailedSummary] = useState([]);
   const [currentSummaryIndex, setCurrentSummaryIndex] = useState(0); // for carousel
@@ -49,6 +51,7 @@ const SidePanel = () => {
   };
 
   const closeQuizModal = async () => {
+    setIsClosingQuiz(true);
      
     // console.log("Closing quiz modal");
     // // make API call to get new questions
@@ -60,16 +63,13 @@ const SidePanel = () => {
         // Make the API call to fetch new questions
         const data = await fetchNewQuestions(selectedWord, siteText, wrong_questions);
 
-        // chrome.storage.local.set({ quiz_questions: data.questions });
-        // chrome.storage.local.set({ new_questions_feedback: data.questions_raw });
-        // chrome.storage.local.set({ new_answers_feedback: data.answers_raw });
-
         chrome.storage.local.set({ quiz_questions: data.questions }, function () {
             console.log("Quiz questions stored in local storage");
         });
 
         try {
             // API call for summary adjustments
+            setIsRefreshing(true);
             const newData = await fetchSummaryAdjustments(selectedWord, data.questions_raw, data.answers_raw);
             setSummaryArr(prev => [newData.summary_adjustment, ...prev]);
             
@@ -78,7 +78,8 @@ const SidePanel = () => {
             console.error("Error fetching summary adjustments:", error);
         }
 
-        
+        setIsRefreshing(false);
+        setIsClosingQuiz(false);
 
     } catch (error) {
         console.error("Error fetching new questions:", error);
@@ -105,6 +106,7 @@ const SidePanel = () => {
   };
 
   const handleRefreshSummary = async () => {
+    setIsRefreshing(true);
     // Optionally, you might reset currentSummaryIndex to 0.
 
     try {
@@ -119,9 +121,8 @@ const SidePanel = () => {
         console.error("Error fetching summary adjustments:", error);
     }
 
-
-    // await fetchAndUpdateSummary();
-  };
+    setIsRefreshing(false);
+};
 
   return (
     <div style={{
@@ -239,6 +240,7 @@ const SidePanel = () => {
                </button>
 
 
+
               <button
                 onClick={handleNextSummary}
                 style={{
@@ -253,6 +255,14 @@ const SidePanel = () => {
                 ▶
               </button>
             </div>
+
+                {/* refresh progress bar */}
+                {isRefreshing && (
+                <div>
+                    <p>Loading new summary...</p>
+                    <progress style={{ width: '100%', color: '#a45c40' }} />
+                </div>
+              )}
 
             
           
@@ -337,6 +347,7 @@ const SidePanel = () => {
               selectedWord={selectedWord}
               summary={summaryArr[currentSummaryIndex]}
               onExit={closeQuizModal}
+              isRefreshing={isRefreshing}
             />
           </div>
         </div>

@@ -4,7 +4,7 @@ import OEQuestion from './OEQuestion';
 import { fetchQuestions } from '../api_helpers';
 import { getStorageValue } from '../utils';
 
-const Quiz = ({ selectedWord, summary, onExit }) => {
+const Quiz = ({ selectedWord, summary, onExit, isRefreshing }) => {
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -169,6 +169,12 @@ const Quiz = ({ selectedWord, summary, onExit }) => {
         <div style={styles.loading}>
           {totalQuestions > 0 && <p>You have completed the quiz!</p>}
           <button onClick={onExit} style={styles.button}>Exit Quiz</button>
+          {isRefreshing && (
+            <div style={styles.loading}>
+            <p>Personalizing experience...</p>
+            <progress style={{ width: '100%' , color: '#a45c40'}} />
+            </div>
+        )}
         </div>
       )}
     </div>
