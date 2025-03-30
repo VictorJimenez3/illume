@@ -29,7 +29,7 @@ class PabloAI:
         print(explanation)
         
         split_explanation = explanation.split("\n")   
-        print(split_explanation)      
+        print("SPLIT EXPANSION", split_explanation)      
        
         gemini_client.close()
 

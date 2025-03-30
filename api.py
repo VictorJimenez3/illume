@@ -8,22 +8,7 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-# temporary pablo ai call, implement custom dictionary to have multiple users after 
-# I finish the basic data pipelines
 pablo_ai = PabloAI()
-# .start() makes initial question
-#.runQuiz() is the recursive quiz
-#matt needs to give the questions in order
-
-#keyword it the topic
-#summary 
-#wrong answer
-#data is dom body
-#
-
-# @app.route('/')
-# def homepage():
-#     return '<h1>hello</h1>'
 
 """
 Calls should procede as:
@@ -53,9 +38,13 @@ def makeSummary():
         "data": entire text from dom body
     }
     '''
-    #confirm with pablo what this function returns. 
+
     json_output = pablo_ai.makeSummary(response["keyword"], response["data"])
     json_output.update({"status" : "success"})
+
+    with open("tests/parsing/makeSummary/output.txt", "w") as f:
+        f.write("***json_output***\n" + json.dumps(json_output))
+        
     return jsonify(json_output), 200
 
 @app.route('/api/makeQuestions', methods=['POST']) #DONE 
@@ -180,6 +169,12 @@ def makeQuestions():
         final["questions"].append(question)
     
     final.update(json_output)
+    with open("tests/parsing/makeQuestions/input.txt", "w") as f:
+        f.write("***json_output***\n" + json.dumps(json_output))
+
+    with open("tests/parsing/makeNewQuestions/output.txt", "w") as f:
+        f.write("***FINAL***\n" + json.dumps(final))
+
     return jsonify(final), 200
 
 @app.route ('/api/makeSummaryAdjustment', methods=['POST']) #DONE
@@ -206,6 +201,9 @@ def makeSummaryAdjustment():
 
     json_output = pablo_ai.makeSummaryAdjustment(response["keyword"], response["new_questions"], response["new_answers"])
     json_output.update({"status" : "success"})
+
+    with open("tests/parsing/makeSummaryAdjustment/in-out-put.txt", "w") as f:
+        f.write("***json_output***\n" + json.dumps(json_output))
 
     return jsonify(json_output), 200
 
@@ -329,7 +327,14 @@ def makeNewQuestions():
         
         final["questions"].append(question)
     
+    with open("tests/parsing/makeNewQuestions/input.txt", "w") as f:
+        f.write("***json_output***\n" + json.dumps(json_output))
+
     final.update(json_output)
+    
+    with open("tests/parsing/makeNewQuestions/output.txt", "w") as f:
+        f.write("***FINAL***\n" + json.dumps(final))
+    
     return jsonify(final), 200
 
 @app.route('/api/youtubeVideoFinder', methods=['POST'])
