@@ -23,8 +23,8 @@ def create_word_explanation(keyword: str, text: str) -> str:
 
     Formatted Output:
     - Between Paragraph 1 and Paragraph 2, there should be a line break \n 
-    - Between Paragraph 1 and Paragraph 2, there should be a line break \n
-    - Between Paragraph 1 and Paragraph 2, there should be a line break \n
+    - Do not add any other line breaks 
+    - Do not add any other text 
 
 
     Styling: DO NOT USE ANY MARKDOWN OR ANY OTHER FORMATTING. JUST THE PLAIN TEXT.
@@ -96,7 +96,7 @@ def create_answers(questions):
     return client.generate_text(prompt)
 
 # This function creates new questions based on the wrong questions
-def create_new_questions(wrong_questions: str, keyword: str, text: str):
+def create_new_questions(keyword: str, text: str, wrong_questions: str):
     client = GeminiClient()
     prompt = f"""Please provide 4 questions that test a very basic understanding of the keyword '{keyword}'. 
     Use the questions that were wrong to create the new questions. The focus should be on the questions that were wrong, with the aim of reinforcing the understanding of the keyword '{keyword}' in the context of the text but more importantly the questions should be different from the questions that were wrong.
@@ -104,21 +104,23 @@ def create_new_questions(wrong_questions: str, keyword: str, text: str):
     The questions should be different, but focused on reinforcing the understanding of the keyword '{keyword}' from the following questions: {wrong_questions}
     The questions should be relevant to the text.
 
-    The questions should be in the following format:
-    
+    The questions should be in the following format. Ensure there is a double line break between each question (use \n). Finally ONLY RETURN THE QUESTIONS, NO OTHER TEXT. ONLY RETURN THE QUESTIONS:
     1. Multiple choice question
-        a. Option 1
-        b. Option 2
-        c. Option 3
-        d. Option 4
+    a. Option 1
+    b. Option 2
+    c. Option 3
+    d. Option 4
+    
     2. Multiple choice question
-        a. Option 1
-        b. Option 2
-        c. Option 3
-        d. Option 4
+    a. Option 1
+    b. Option 2
+    c. Option 3
+    d. Option 4
+    
     3. True or false question
-    4. Fill in the blank question(Should be a single word or short expression which should be easy to fill in and should be derived from the text, no symbols or special characters)
-
+    
+    4. Fill in the blank question(Should be a single word or short expression which should be easy to fill in and should be derived from the text)
+    
     Styling: DO NOT USE ANY MARKDOWN OR ANY OTHER FORMATTING. JUST THE PLAIN TEXT.
 
     Text: {text}
