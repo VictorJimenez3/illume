@@ -13,7 +13,10 @@ def main():
   
     quiz_results = pablo_ai.makeQuestions(keyword, results["general_explanation"])
     
-    return results, quiz_results
+    # Generate video visualization
+    video_results = pablo_ai.generate_video(keyword, results["general_explanation"])
+    
+    return results, quiz_results, video_results
 
 if __name__ == "__main__":
     main()
