@@ -103,8 +103,7 @@ def makeQuestions():
     y = [x.strip() for x in answers.split("\n") if x]
     answers_formatted = []
     for i in range(0, len(y) - 1, 2):
-        answers_formatted.append((y[i], y[i + 1])) 
-        
+        answers_formatted.append((y[i], y[i + 1]))
 
     final = {
         "questions" : []
