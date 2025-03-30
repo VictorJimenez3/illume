@@ -13,6 +13,8 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.runtime.onConnect.addListener((port) => {
     if (port.name === "sendSiteText") {
       contentPort = port;
+
+      console.log("Connected to content script");
   
       port.onMessage.addListener(function(msg) {
         if (msg.siteText) {

@@ -16,6 +16,7 @@ const SidePanel = () => {
   const [showQuiz, setShowQuiz] = useState(false);
 
   useEffect(() => {
+
     const fetchAndDisplaySummary = async () => {
       const word = await getStorageValue("selectedText");
       setSelectedWord(word);
@@ -52,30 +53,39 @@ const SidePanel = () => {
     // console.log("Closing quiz modal");
     // // make API call to get new questions
     // try {
-    //     const siteText = await getStorageValue("siteText");
+    //     // const siteText = await getStorageValue("siteText");
+    //     const siteText = "dummy site text about nothing crazy";
     //     const wrong_questions = await getStorageValue("wrong_questions");
 
     //     // Make the API call to fetch new questions
     //     const data = await fetchNewQuestions(word, siteText, wrong_questions);
-    //     chrome.storage.local.set({ quiz_questions: data.questions });
-    //     chrome.storage.local.set({ new_questions_feedback: data.questions_raw });
-    //     chrome.storage.local.set({ new_answers_feedback: data.answers_raw });
 
-    //     try {
-    //         // API call for summary adjustments
-    //         const newData = await fetchSummaryAdjustments(word, data.new_questions, data.new_answers);
-    //         setSummaryArr(prev => [newData.summary_adjustment, ...prev]);
+
+    //     // chrome.storage.local.set({ quiz_questions: data.questions });
+    //     // chrome.storage.local.set({ new_questions_feedback: data.questions_raw });
+    //     // chrome.storage.local.set({ new_answers_feedback: data.answers_raw });
+
+    //     chrome.storage.local.set({ quiz_questions: data.questions }, function () {
+    //         console.log("Quiz questions stored in local storage");
+    //     });
+
+    //     // try {
+    //     //     // API call for summary adjustments
+    //     //     const newData = await fetchSummaryAdjustments(word, data.new_questions, data.new_answers);
+    //     //     setSummaryArr(prev => [newData.summary_adjustment, ...prev]);
             
 
-    //     } catch (error) {
-    //         console.error("Error fetching summary adjustments:", error);
-    //     }
+    //     // } catch (error) {
+    //     //     console.error("Error fetching summary adjustments:", error);
+    //     // }
 
         
 
     // } catch (error) {
     //     console.error("Error fetching new questions:", error);
     // }
+
+
 
     setShowQuiz(false);
   };
@@ -95,55 +105,206 @@ const SidePanel = () => {
     );
   };
 
-  return (
-    <div style={{ padding: '1rem', fontFamily: 'sans-serif', position: 'relative' }}>
-      <h2>illume</h2>
-      <p>{selectedWord || "No word selected."}</p>
+  const handleRefreshSummary = async () => {
+    // Optionally, you might reset currentSummaryIndex to 0.
 
+    try {
+        // API call for summary adjustments
+        const new_questions = "dummy new questions";
+        const new_answers = "dummy new answers";
+        const newData = await fetchSummaryAdjustments(word, new_questions, new_answers);
+        setSummaryArr(prev => [newData.summary_adjustment, ...prev]);
+
+
+    } catch (error) {
+        console.error("Error fetching summary adjustments:", error);
+    }
+
+
+    // await fetchAndUpdateSummary();
+  };
+
+  return (
+    <div style={{
+      padding: '1.5rem',
+      fontFamily: 'math',
+      backgroundColor: '#f6eee0',
+      color: '#a45c40',
+      minHeight: '100vh'
+    }}>
+      <h2 style={{
+        textAlign: 'center',
+        color: '#3D0C0C',
+        // backgroundColor: '#a45c40',
+        padding: '0.75rem',
+        borderRadius: '12px',
+        fontSize: '1.5rem',
+        marginBottom: '1rem',
+      }}>
+        illume
+      </h2>
+  
+      <p style={{
+        fontSize: '2rem',
+        fontWeight: 'bold',
+        color: '#a45c40',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        maxWidth: '100%',
+        textAlign: 'center',
+        fontStyle: 'italic',
+      }}>
+        {selectedWord?.length > 50
+          ? selectedWord.slice(0, 50) + '...'
+          : selectedWord || "No word selected."}
+      </p>
+  
       {summaryArr.length === 0 && (
         <div>
           <p>Loading summary...</p>
-          <progress style={{ width: '100%' }} />
+          <progress style={{ width: '100%', color: '#a45c40' }} />
         </div>
       )}
-
+  
       {summaryArr.length > 0 && (
-        <div style={{ border: '1px solid #ccc', padding: '1rem', marginTop: '1rem', borderRadius: '6px' }}>
-          <p><strong>Summary {currentSummaryIndex + 1} of {summaryArr.length}</strong></p>
-          <p>{summaryArr[currentSummaryIndex]}</p>
-
-          
-
-          {/* diplay carousel buttons only if there are multiple summaries */}
-          {summaryArr.length > 1 && (
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem' }}>
-            <button onClick={handlePrevSummary}>◀ Previous</button>
-            <button onClick={handleNextSummary}>Next ▶</button>
+        <div style={{
+          backgroundColor: '#e4b7a0',
+          color: '#3a2c1b',
+          border: '1px solid #c38370',
+          padding: '1rem',
+          marginTop: '1rem',
+          borderRadius: '10px'
+        }}>
+         <p style={{ textAlign: 'center', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+            Summary {currentSummaryIndex + 1} of {summaryArr.length}
+            </p>
+          {summaryArr.length > 0 && (
+            <div style={{
+                marginTop: '1rem',
+              backgroundColor: '#fff5ea',
+              border: '1px solid #c38370',
+              borderRadius: '8px',
+              padding: '0.75rem',
+              textAlign: 'center',
+              maxHeight: '200px',
+              overflowY: 'auto',
+            }}>
+                <p style={{
+                fontSize: '1.1rem',
+                // fontWeight: 'bold',
+                // lineHeight: '1.2',
+                // whiteSpace: 'pre-line'
+                }}>
+                {summaryArr[currentSummaryIndex]}
+                </p>
             </div>
-          )}
+         )}
+  
+          
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginTop: '1rem'
+            }}>
+              <button
+                onClick={handlePrevSummary}
+                style={{
+                  backgroundColor: '#c38370',
+                  borderColor: '#c38370',
+                //   border: 'none',
+                //   padding: '0.5rem 1rem',
+                  borderRadius: '6px',
+                  color: 'white',
+                  cursor: 'pointer'
+                }}
+              >
+                ◀
+              </button>
+              <button
+                onClick={handleNextSummary}
+                style={{
+                  backgroundColor: '#c38370',
+                  borderColor: '#c38370',
+                //   padding: '0.5rem 1rem',
+                  borderRadius: '6px',
+                  color: 'white',
+                  cursor: 'pointer'
+                }}
+              >
+                ▶
+              </button>
+            </div>
 
-
-          <div style={{ marginTop: '1rem' }}>
-            <button onClick={toggleDetailed}>
-            {showDetailed ? "Hide Contextualized Explanation" : "Contextualize Now!"}
+            <button onClick={handleRefreshSummary} style={{
+                position: 'absolute',
+                bottom: '10px',
+                right: '10px',
+                backgroundColor: '#e4b7a0',
+                border: 'none',
+                padding: '0.4rem 0.8rem',
+                borderRadius: '6px',
+                color: '#a45c40',
+                cursor: 'pointer'
+            }}>
+                🔄
+            </button>
+          
+  
+          <div style={{ marginTop: '1rem', textAlign: 'center' }}>
+            <button
+              onClick={toggleDetailed}
+              style={{
+                backgroundColor: '#a45c40',
+                color: 'white',
+                padding: '0.5rem 1rem',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                
+              }}
+            >
+              {showDetailed ? "Hide Contextualized Explanation" : "Contextualize Now!"}
             </button>
           </div>
-
+  
           {showDetailed && (
-            <div style={{ marginTop: '1rem' }}>
-            <p>{detailedSummary || "No contextualized explanation available."}</p>
+            <div style={{
+              marginTop: '1rem',
+              backgroundColor: '#fff5ea',
+              border: '1px solid #c38370',
+              borderRadius: '8px',
+              padding: '0.75rem',
+              textAlign: 'center',
+              maxHeight: '200px',
+              overflowY: 'auto',
+            }}>
+              <p>{detailedSummary || "No contextualized explanation available."}</p>
             </div>
           )}
         </div>
+        
       )}
-
-
-      <div style={{ marginTop: '1rem' }}>
-        <button id="learnMoreButton" onClick={openQuizModal}>
+  
+      <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+        <button
+          id="learnMoreButton"
+          onClick={openQuizModal}
+          style={{
+            backgroundColor: '#a45c40',
+            color: 'white',
+            padding: '0.75rem 1.5rem',
+            border: 'none',
+            borderRadius: '8px',
+            fontWeight: 'bold',
+            fontSize: '1rem',
+            cursor: 'pointer',
+          }}
+        >
           Open Quiz
         </button>
       </div>
-
+  
       {showQuiz && (
         <div style={{
           position: 'fixed',
@@ -157,13 +318,25 @@ const SidePanel = () => {
           justifyContent: 'center',
           zIndex: 1000
         }}>
-          <div style={{ background: 'white', padding: '1rem', borderRadius: '4px', width: '90%', maxWidth: '600px' }}>
-            <Quiz selectedWord={selectedWord} summary={summaryArr[currentSummaryIndex]} onExit={closeQuizModal} />
+          <div style={{
+            background: 'white',
+            padding: '1.5rem',
+            borderRadius: '12px',
+            width: '90%',
+            maxWidth: '600px',
+            boxShadow: '0 0 20px rgba(0,0,0,0.2)'
+          }}>
+            <Quiz
+              selectedWord={selectedWord}
+              summary={summaryArr[currentSummaryIndex]}
+              onExit={closeQuizModal}
+            />
           </div>
         </div>
       )}
     </div>
   );
+  
 };
 
 export default SidePanel;
