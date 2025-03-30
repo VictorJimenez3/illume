@@ -372,10 +372,10 @@ def youtubeVideoFinder():
     } 34.139.24.227:5000
     '''
     
-    return {
+    return jsonify({
         "media_link" : youtubeSearch(topic),
         "status" : "success"
-    }
+    }), 200
 
 
 if __name__ == '__main__':
