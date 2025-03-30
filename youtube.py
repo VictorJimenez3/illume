@@ -32,7 +32,7 @@ def youtubeSearch(query, max_results=1):
 
     try:
         response = requests.get(url, params=params)
-        response.raise_for_status()  # Raise exception for 4XX/5XX responses
+        # response.raise_for_status()  # Raise exception for 4XX/5XX responses
         
         data = response.json()
         
