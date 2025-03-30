@@ -358,7 +358,7 @@ def makeNewQuestions():
         
 @app.route('/api/youtubeVideoFinder', methods=['POST'])
 def youtubeVideoFinder():
-    response = request.json()
+    response = request.json
 
     try:
         assert("topic" in response)
