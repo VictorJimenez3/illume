@@ -83,19 +83,99 @@ def makeQuestions():
         "explanation" : #current summary of topic called from other API endpoint
     }
     '''
+    def parse_answers(answer_parts: list) -> list:
+        parsed_answers = []
+        parsed_explanations = []
+        for part in answer_parts:
+            answer_part, explanation_part = part.split("\nExplanation: ")
+            parsed_answers.append(answer_part)
+            parsed_explanations.append(explanation_part)
+        return parsed_answers, parsed_explanations
+    
+    def parse_multiple_choice_question(question_text):
+        # Split into question and options
+        lines = question_text.strip().split('\n')
+        
+        # Get question (removing the number prefix "2. ")
+        question = lines[0].split('. ', 1)[1]
+        
+        # Get options (removing the leading spaces and "a. ", "b. " etc.)
+        options = [line.strip()[3:] for line in lines[1:]]
+        
+        return {
+            'question': question,
+            'options': {
+                'a': options[0],
+                'b': options[1],
+                'c': options[2],
+                'd': options[3]
+            }
+        }
+
     json_output = pablo_ai.makeQuestions(response["keyword"], response["explanation"])
-    questions, answers = json_output["questions_raw"], json_output["answers_raw"]
+    
+    question_parts, answer_parts = json_output["questions_raw"], json_output["answers_raw"]
 
-    print(answers)
+    parsed_answers, parsed_explanations = parse_answers(answer_parts)
 
-    final = {}
-    groups = zip(questions, answers)
-    for question, answer in groups:
-        pprint([x.strip() for x in question.split("\n") if x])
-        print(answer.split("\n"))
-        print("\n")
+    json_data = {
+        "questions" : [],
+        "questions_raw" : question_parts,
+        "answers_raw" : answer_parts
+    }
 
-    return jsonify(final), 200
+    assert(min(len(question_parts), len(answer_parts)) == 4)
+    for i in range(min(len(question_parts), len(answer_parts))):
+        # print(question_parts[i])
+        # print(parsed_answers[i])
+        # print(parsed_explanations[i])
+
+        if i < 2:
+            multiple_choice_question = parse_multiple_choice_question(question_parts[i])
+                    
+            json_data["questions"].append({
+                    "question": multiple_choice_question['question'],
+                    "type": "mc",
+
+                    "options": [{
+                        "text": multiple_choice_question['options']['a'],
+                        "correct": multiple_choice_question['options']['a'] in parsed_answers[i],
+                        "explanation": parsed_explanations[i] if multiple_choice_question['options']['a'] in parsed_answers[i] else None
+                    },
+                    {
+                        "text": multiple_choice_question['options']['b'],
+                        "correct": multiple_choice_question['options']['b'] in parsed_answers[i],
+                        "explanation": parsed_explanations[i] if multiple_choice_question['options']['b'] in parsed_answers[i] else None
+                    },
+                    {
+                        "text": multiple_choice_question['options']['c'],
+                        "correct": multiple_choice_question['options']['c'] in parsed_answers[i],
+                        "explanation": parsed_explanations[i] if multiple_choice_question['options']['c'] in parsed_answers[i] else None
+                    },
+                    {
+                        "text": multiple_choice_question['options']['d'],
+                        "correct": multiple_choice_question['options']['d'] in parsed_answers[i],
+                        "explanation": parsed_explanations[i] if multiple_choice_question['options']['d'] in parsed_answers[i] else None
+                    }
+                    ] # options will be of length one if O-E
+                })
+
+            
+        else:
+            json_data["questions"].append({
+                    "question": question_parts[i],
+                    "type": "oe",
+
+                    "options": [{
+                        "text": parsed_answers[i],
+                        "correct": True,
+                        "explanation": parsed_explanations[i]
+                    }] # options will be of length one if O-E
+            })
+
+    # print("FLAG", type(json_data), len(json_data))
+    # pprint(json_data)
+    return jsonify(json_data), 200
 
 @app.route ('/api/makeSummaryAdjustment', methods=['POST']) #DONE
 def makeSummaryAdjustment():
@@ -148,6 +228,9 @@ def makeNewQuestions():
     }
     """
     response = request.json
+    
+    print("response")
+    pprint(response)
 
     try:
         assert("keyword" in response and "data" in response and "wrong_questions" in response)
@@ -161,101 +244,116 @@ def makeNewQuestions():
         "wrong_questions": ["", ""]
     }
     '''
-
     json_output = pablo_ai.makeNewQuestions(response["keyword"], response["data"], response["wrong_questions"])
-    #parse JSON formatted questions and answers
-    questions, answers = json_output["questions_raw"], json_output["answers_raw"]
+    def parse_answers(answer_parts: list) -> list:
+        parsed_answers = []
+        parsed_explanations = []
+        for part in answer_parts:
+            answer_part, explanation_part = part.split("\nExplanation: ")
+            parsed_answers.append(answer_part)
+            parsed_explanations.append(explanation_part)
+        return parsed_answers, parsed_explanations
     
-    #QUESTIONS FORMATTED STARTS WITH QUESTION, FOLLOWED WITH MC OPTIONS IF EXISTS
-    y = [x.strip() for x in questions.split("\n")]
-    questions_formatted = []
-    current_question_buffer = []
-    for sentence in y:
-        if not sentence: #double newline
-            questions_formatted.append(current_question_buffer)
-            current_question_buffer = []
-        else:
-            current_question_buffer.append(sentence)
-
-    #ANSWERS FORMATTED is [(answer, explanation), ...]
-    y = [x.strip() for x in answers.split("\n") if x]
-    answers_formatted = []
-    for i in range(0, len(y) - 1, 2):
-        answers_formatted.append((y[i], y[i + 1])) 
+    def parse_multiple_choice_question(question_text):
+        # Split into question and options
+        lines = question_text.strip().split('\n')
         
+        # Get question (removing the number prefix "2. ")
+        question = lines[0].split('. ', 1)[1]
+        
+        # Get options (removing the leading spaces and "a. ", "b. " etc.)
+        options = [line.strip()[3:] for line in lines[1:]]
+        
+        return {
+            'question': question,
+            'options': {
+                'a': options[0],
+                'b': options[1],
+                'c': options[2],
+                'd': options[3]
+            }
+        }
+    
+    question_parts, answer_parts = json_output["questions_raw"], json_output["answers_raw"]
+    # try:
+    parsed_answers, parsed_explanations = parse_answers(answer_parts)
+    # except:
+    #     print(answer_parts)
 
-    final = {
-        "questions" : []
+    json_data = {
+        "questions" : [],
+        "questions_raw" : question_parts,
+        "answers_raw" : answer_parts
     }
 
-    def isCorrect(choice, answer):
-        # Fixed: Add error handling for when ")" isn't found
-        choice_pos = choice.find(")")
-        answer_pos = answer.find(")")
+    assert(min(len(question_parts), len(answer_parts)) == 4)
+    for i in range(min(len(question_parts), len(answer_parts))):
+        # print(question_parts[i])
+        # print(parsed_answers[i])
+        # print(parsed_explanations[i])
+
+        if i < 2:
+            multiple_choice_question = parse_multiple_choice_question(question_parts[i])
+                    
+            json_data["questions"].append({
+                    "question": multiple_choice_question['question'],
+                    "type": "mc",
+
+                    "options": [{
+                        "text": multiple_choice_question['options']['a'],
+                        "correct": multiple_choice_question['options']['a'] in parsed_answers[i],
+                        "explanation": parsed_explanations[i] if multiple_choice_question['options']['a'] in parsed_answers[i] else None
+                    },
+                    {
+                        "text": multiple_choice_question['options']['b'],
+                        "correct": multiple_choice_question['options']['b'] in parsed_answers[i],
+                        "explanation": parsed_explanations[i] if multiple_choice_question['options']['b'] in parsed_answers[i] else None
+                    },
+                    {
+                        "text": multiple_choice_question['options']['c'],
+                        "correct": multiple_choice_question['options']['c'] in parsed_answers[i],
+                        "explanation": parsed_explanations[i] if multiple_choice_question['options']['c'] in parsed_answers[i] else None
+                    },
+                    {
+                        "text": multiple_choice_question['options']['d'],
+                        "correct": multiple_choice_question['options']['d'] in parsed_answers[i],
+                        "explanation": parsed_explanations[i] if multiple_choice_question['options']['d'] in parsed_answers[i] else None
+                    }
+                    ] # options will be of length one if O-E
+                })
+        # elif "true" in question_parts[i].lower() or "false" in question_parts[i].lower():
+        #     json_data["questions"].append({
+        #             "question": multiple_choice_question['question'],
+        #             "type": "mc",
+
+        #             "options": [{
+        #                 "text": True,
+        #                 "correct": multiple_choice_question['options']['a'] in parsed_answers[i],
+        #                 "explanation": parsed_explanations[i] if multiple_choice_question['options']['a'] in parsed_answers[i] else None
+        #             },
+        #             {
+        #                 "text": False,
+        #                 "correct": multiple_choice_question['options']['b'] in parsed_answers[i],
+        #                 "explanation": parsed_explanations[i] if multiple_choice_question['options']['b'] in parsed_answers[i] else None
+        #             },
+        #             ] # options will be of length one if O-E
+        #         })
         
-        if choice_pos < 1 or answer_pos < 1:
-            return False  # Invalid format
-            
-        currentChoice = choice[choice_pos - 1]
-        answerChoice = answer[answer_pos - 1]
-        return currentChoice == answerChoice
-
-    for i, q in enumerate(questions_formatted):
-        if not len(q):
-            continue
-
-        # Fixed: Create a new question object for each iteration
-        question = {}
-        question["question"] = q[0]
-        question["type"] = "mc" if len(q) > 1 or "true" in q[0].lower() or "false" in q[0].lower() else "oe"
-
-        if question["type"] == "oe":
-            question["options"] = [{
-                "text": answers_formatted[i][0],
-                "correct": True,
-                "explanation": answers_formatted[i][1]
-            }]
-            question["oeActual"] = [*answers_formatted[i]]
-
         else:
-            question["options"] = []
+            json_data["questions"].append({
+                    "question": question_parts[i],
+                    "type": "oe",
+
+                    "options": [{
+                        "text": parsed_answers[i],
+                        "correct": True,
+                        "explanation": parsed_explanations[i]
+                    }] # options will be of length one if O-E
+            })
+
+    return jsonify(json_data), 200
         
-        # Fixed: Create a copy instead of a reference
-        choices = q[1:]  # Using slicing to create a copy
-        for choice in choices:  # all choices if mc
-            question["oeActual"] = [*answers_formatted[i]]
-
-            question["options"].append({
-                "text": choice,
-                "correct": isCorrect(choice, answers_formatted[i][0]),
-                "explanation": None if not isCorrect(choice, answers_formatted[i][0]) else answers_formatted[i][1] 
-            })
-
-        if not len(question["options"]) and question["type"] == "mc": #t/f 
-            question["options"].append({
-                "text": "True",
-                "correct": "true" in answers_formatted[i][0].lower(),
-                "explanation": answers_formatted[i][1] if "true" in answers_formatted[i][0].lower() else None
-            })
-            question["options"].append({
-                "text": "False",
-                "correct": "false" in answers_formatted[i][0].lower(),
-                "explanation": answers_formatted[i][1] if "false" in answers_formatted[i][0].lower() else None
-            })
-            question["tfActual"] = [*answers_formatted[i]]
         
-        final["questions"].append(question)
-    
-    with open("tests/parsing/makeNewQuestions/input.txt", "w") as f:
-        f.write("***json_output***\n" + json.dumps(json_output))
-
-    final.update(json_output)
-    
-    with open("tests/parsing/makeNewQuestions/output.txt", "w") as f:
-        f.write("***FINAL***\n" + json.dumps(final))
-    
-    return jsonify(final), 200
-
 @app.route('/api/youtubeVideoFinder', methods=['POST'])
 def youtubeVideoFinder():
     response = request.json()

@@ -1,2 +1,2 @@
 ***json_output***
-{"summary_adjustment": "Euler's constant, denoted by \u03b3 (gamma), is a mathematical constant approximately equal to 0.57721. It represents the limiting difference between the harmonic series and the natural logarithm. A key unsolved question in mathematics is whether Euler's constant is rational or irrational.\n", "status": "success"}
+{"summary_adjustment": "In the context of these questions, an 'Example' is a specific instance or case used to clarify a general concept, definition, or rule. It helps bridge the gap between abstract ideas and practical understanding by providing a concrete, relatable situation. Examples are illustrative, not exhaustive, and aim to make the subject matter easier to grasp.\n", "status": "success"}
