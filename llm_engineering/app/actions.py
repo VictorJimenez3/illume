@@ -52,16 +52,21 @@ class PabloAI:
         print("\nQuestions:")
         print(questions)
 
+        split_questions = questions.split("\n\n")
+
         answers = create_answers(questions)
         print("✓ create_answers imported and called successfully")
         print("\nAnswers:")
         print(answers)
 
-        gemini_client.close()
 
+        split_answers = answers.split("\n\n")
+
+        gemini_client.close()
+        
         results = {
-            "questions_raw": questions,
-            "answers_raw": answers
+            "questions_raw": split_questions,
+            "answers_raw": split_answers
         }
 
         return results
