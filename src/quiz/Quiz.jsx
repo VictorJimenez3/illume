@@ -9,6 +9,8 @@ const Quiz = ({ selectedWord, summary, onExit, isRefreshing }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
+
+
     const fetchAndDisplayQuestions = async () => {
       
         // Check if questions are already in local storage

@@ -21,6 +21,16 @@ const SidePanel = () => {
 
   useEffect(() => {
 
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape' && showQuiz) {
+        setShowQuiz(false);
+        setIsClosingQuiz(true);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+  
+
     const fetchAndDisplaySummary = async () => {
       const word = await getStorageValue("selectedText");
       setSelectedWord(word);
@@ -57,6 +67,10 @@ const SidePanel = () => {
     };
 
     fetchAndDisplaySummary();
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   const openQuizModal = () => {
@@ -84,19 +98,22 @@ const SidePanel = () => {
             // API call for summary adjustments
             const newData = await fetchSummaryAdjustments(selectedWord, data.questions_raw, data.answers_raw);
             setSummaryArr(prev => [newData.summary_adjustment, ...prev]);
+
+            // TODO: store questions_raw and answers_raw to local storage
             
 
         } catch (error) {
             console.error("Error fetching summary adjustments:", error);
         }
 
-        setIsClosingQuiz(false);
 
     } catch (error) {
         console.error("Error fetching new questions:", error);
+
+
     }
 
-
+    setIsClosingQuiz(false);
 
     setShowQuiz(false);
   };
@@ -122,6 +139,7 @@ const SidePanel = () => {
 
     try {
         // API call for summary adjustments
+        // TODO: use local storage
         const new_questions = "sample new questions";
         const new_answers = "sample new answers";
         const newData = await fetchSummaryAdjustments(selectedWord, new_questions, new_answers);
