@@ -1,2 +1,2 @@
 ***json_output***
-{"summary_adjustment": "Euler's constant, often represented by the Greek letter gamma (\u03b3), is a mathematical constant approximately equal to 0.57721. It is defined as the limiting difference between the harmonic series and the natural logarithm. A key unsolved problem in mathematics is whether Euler's constant is a rational or irrational number.\n", "status": "success"}
+{"summary_adjustment": "In the context of these questions, a \"directory\" on a computer is like a folder. It's a way to organize files and other directories (subfolders) into a structured system, much like a table of contents helps you navigate a book or folders organize papers in a filing cabinet.\n", "status": "success"}

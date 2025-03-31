@@ -246,7 +246,7 @@ def makeNewQuestions():
         "wrong_questions": ["", ""]
     }
     '''
-    json_output = pablo_ai.makeNewQuestions(response["keyword"], response["data"], response["wrong_questions"])
+    json_output = pablo_ai.makeNewQuestions(response["keyword"], response["data"], "\n".join(response["wrong_questions"]))
     def parse_answers(answer_parts: list) -> list:
         parsed_answers = []
         parsed_explanations = []
