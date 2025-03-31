@@ -4,11 +4,19 @@ import OEQuestion from './OEQuestion';
 import { fetchQuestions } from '../api_helpers';
 import { getStorageValue } from '../utils';
 
-const Quiz = ({ selectedWord, summary, onExit, isRefreshing }) => {
+const Quiz = ({ selectedWord, summary, onExit, onESC, isRefreshing }) => {
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
+
+    // run onExit when escape pressed
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        onESC();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
 
 
     const fetchAndDisplayQuestions = async () => {
@@ -59,6 +67,10 @@ const Quiz = ({ selectedWord, summary, onExit, isRefreshing }) => {
             setQuestions([]);
             return;
         }
+      }
+
+      return () => {
+        document.removeEventListener('keydown', handleKeyDown);
       }
     };
 

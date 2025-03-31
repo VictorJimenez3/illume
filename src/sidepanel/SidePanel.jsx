@@ -20,15 +20,6 @@ const SidePanel = () => {
   const [showQuiz, setShowQuiz] = useState(false);
 
   useEffect(() => {
-
-    const handleKeyDown = (event) => {
-      if (event.key === 'Escape' && showQuiz) {
-        setShowQuiz(false);
-        setIsClosingQuiz(true);
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
   
 
     const fetchAndDisplaySummary = async () => {
@@ -67,15 +58,15 @@ const SidePanel = () => {
     };
 
     fetchAndDisplaySummary();
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
   }, []);
 
   const openQuizModal = () => {
     setShowQuiz(true);
   };
+
+  const closeQuizModalEscape = (event) => { 
+    setShowQuiz(false);
+  }
 
   const closeQuizModal = async () => {
     setIsClosingQuiz(true);
@@ -403,6 +394,7 @@ const SidePanel = () => {
               selectedWord={selectedWord}
               summary={summaryArr[currentSummaryIndex]}
               onExit={closeQuizModal}
+              onESC={closeQuizModalEscape}
               isRefreshing={isClosingQuiz}
             />
           </div>
