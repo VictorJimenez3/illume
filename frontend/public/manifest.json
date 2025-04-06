@@ -1,0 +1,46 @@
+{
+    "name": "illume", 
+    "description": "illume vite", 
+    "version": "1.0",
+    "manifest_version": 3,
+
+    "background": {
+        "service_worker": "background.js"
+    },
+  
+    "permissions": ["storage", "activeTab", "contextMenus", "scripting", "sidePanel"],
+    
+    "action": {
+        "default_icon": {
+            "32": "images/popup_logo.png"
+        },
+        "default_popup": "index.html"
+    }, 
+    
+    "side_panel": {
+        "default_path": "sidepanel.html"
+    },
+
+    "icons": {
+        "32": "images/popup_logo.png"
+    },
+    
+    "content_scripts": [
+        {
+            
+            "matches": ["<all_urls>"],
+            "js": ["content.js"],
+            "run_at": "document_idle"
+        }
+ 
+    
+    ],
+
+    "host_permissions": [
+        "<all_urls>"
+    ],
+
+    "externally_connectable": {
+        "matches": ["https://*.example.com/*"]
+    }
+}

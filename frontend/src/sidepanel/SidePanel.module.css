@@ -1,0 +1,126 @@
+.container {
+    padding: 1.5rem;
+    font-family: sans-serif;
+    background-color: #f6eee0;
+    color: #a45c40;
+    min-height: 100vh;
+  }
+  
+  .header {
+    text-align: center;
+    color: #ffffff;
+    background-color: #a45c40;
+    padding: 0.75rem;
+    border-radius: 12px;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+  
+  .selectedWord {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #a45c40;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+  
+  .card {
+    background-color: #e4b7a0;
+    color: #3a2c1b;
+    border: 1px solid #c38370;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 10px;
+    transition: all 0.4s ease;
+    opacity: 1;
+  }
+  
+  .buttonGroup {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+  }
+  
+  .button {
+    background-color: #c38370;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .button:hover {
+    transform: scale(1.05);
+  }
+  
+  .toggleButton {
+    background-color: #a45c40;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    margin-top: 1rem;
+    cursor: pointer;
+  }
+  
+  .detailedBox {
+    margin-top: 1rem;
+    background-color: #fff5ea;
+    border: 1px solid #c38370;
+    border-radius: 8px;
+    padding: 0.75rem;
+  }
+  
+  .openQuiz {
+    background-color: #a45c40;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 1.5rem;
+  }
+  
+  .modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .modalContent {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  
+  @keyframes slide {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  
+  .slide {
+    animation: slide 0.3s ease;
+  }
+  
