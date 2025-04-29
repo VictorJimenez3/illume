@@ -210,13 +210,3 @@ poetry run isort .
 ## License
 
 This project is licensed under the terms specified in the LICENSE file.
-
-## Author
-
-Pablo Leyva
-
-## Contact
-
-- LinkedIn: [Pablo Leyva](https://www.linkedin.com/in/pablo-leyva/)
-- AI Partner Solutions at Apple
-- Email: pleyva2004@gmail.com
